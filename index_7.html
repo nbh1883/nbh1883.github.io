@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noah Hunter</title>
+    <meta name="description" content="Noah Hunter — Data & AI Consultant at North Highland. Co-Founder & Editor-in-Chief of Final Weapon.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #050505; --fg: #ededed; --mid: #777;
+            --faint: rgba(255,255,255,0.1); --ghost: rgba(255,255,255,0.04);
+            --sans: 'Outfit', system-ui, sans-serif;
+            --mono: 'Space Mono', monospace;
+        }
+        html { font-size: 16px; overflow-x: hidden; }
+        body { background: var(--bg); color: var(--fg); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+        ::selection { background: var(--fg); color: var(--bg); }
+        a { color: inherit; text-decoration: none; }
+
+        /* LOADER */
+        #loader { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 1.25rem; }
+        .loader-name { font-weight: 800; font-size: 1.1rem; letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.3; }
+        .loader-bar { width: 100px; height: 1px; background: rgba(255,255,255,0.08); overflow: hidden; }
+        .loader-fill { width: 0%; height: 100%; background: var(--fg); }
+
+        /* NAV */
+        .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; mix-blend-mode: difference; }
+        .nav-logo { font-weight: 700; font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; }
+        .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+        .nav-links a { font-size: 0.6rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.4; transition: opacity 0.3s; }
+        .nav-links a:hover { opacity: 1; }
+        .nav-hamburger { display: none; background: none; border: none; cursor: pointer; }
+
+        /* INTRO */
+        .scene-intro { height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 2.5rem; position: relative; }
+        .scene-intro::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 30px 30px; pointer-events: none; }
+        .intro-greeting { font-size: 1.1rem; font-weight: 300; color: var(--mid); margin-bottom: 1.25rem; opacity: 0; }
+        .intro-name { font-weight: 800; font-size: clamp(5rem, 14vw, 12rem); line-height: 0.9; letter-spacing: -0.04em; }
+        .intro-name .ln { display: block; overflow: hidden; }
+        .intro-name .ln span { display: inline-block; transform: translateY(115%); }
+        .intro-typing-wrap { margin-top: 2.5rem; display: flex; align-items: baseline; gap: 0.5rem; opacity: 0; }
+        .intro-typing-label { font-size: clamp(1.1rem, 2.5vw, 1.5rem); font-weight: 300; color: var(--mid); }
+        .intro-typing-role { font-family: var(--mono); font-size: clamp(1.1rem, 2.5vw, 1.5rem); color: var(--fg); border-right: 2px solid var(--fg); padding-right: 3px; animation: blink-caret 0.75s step-end infinite; }
+        @keyframes blink-caret { 50% { border-color: transparent; } }
+        .intro-scroll { position: absolute; bottom: 2.5rem; left: 2.5rem; display: flex; align-items: center; gap: 1rem; opacity: 0; }
+        .intro-scroll-text { font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--mid); }
+        .intro-scroll-line { width: 60px; height: 1px; background: var(--faint); position: relative; overflow: hidden; }
+        .intro-scroll-line::after { content: ''; position: absolute; left: 0; top: 0; width: 30px; height: 1px; background: var(--fg); animation: slide-line 2s ease-in-out infinite; }
+        @keyframes slide-line { 0% { transform: translateX(-30px); } 100% { transform: translateX(60px); } }
+
+        /* UTILS */
+        .sec-pad { max-width: 1100px; margin: 0 auto; padding: 6rem 2.5rem; }
+        .sec-border { border-top: 1px solid var(--faint); }
+        .eyebrow { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; color: var(--mid); margin-bottom: 1rem; }
+        .sec-title { font-weight: 800; font-size: clamp(1.8rem, 4vw, 3rem); letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 2rem; }
+
+        /* WHAT I DO */
+        .wid-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 1rem; }
+        .wid-text p { font-size: 0.9rem; font-weight: 300; line-height: 1.9; color: var(--mid); margin-bottom: 1rem; }
+        .wid-text p strong { color: var(--fg); font-weight: 500; }
+        .wid-sidebar { border: 1px solid var(--faint); padding: 2rem; }
+        .wid-sidebar-title { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mid); margin-bottom: 1.5rem; }
+        .wid-sidebar-item { display: flex; justify-content: space-between; align-items: baseline; padding: 0.6rem 0; border-bottom: 1px solid var(--ghost); }
+        .wid-sidebar-item:last-child { border-bottom: none; }
+        .wid-sidebar-item .skill { font-size: 0.8rem; font-weight: 500; }
+        .wid-sidebar-item .level { font-size: 0.55rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); }
+
+        /* FW */
+        .scene-fw { position: relative; overflow: hidden; }
+        .scene-fw::before { content: 'FW'; position: absolute; font-weight: 800; font-size: clamp(15rem, 35vw, 45rem); color: var(--ghost); right: -3%; top: 50%; transform: translateY(-50%); line-height: 1; pointer-events: none; }
+        .fw-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 4rem; align-items: start; position: relative; z-index: 1; }
+        .fw-text p { font-size: 0.9rem; font-weight: 300; line-height: 1.9; color: var(--mid); margin-bottom: 1rem; }
+        .fw-text p strong { color: var(--fg); font-weight: 500; }
+        .fw-cta { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem; font-weight: 600; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.85rem 1.75rem; border: 1px solid var(--fg); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .fw-cta:hover { background: var(--fg); color: var(--bg); gap: 1rem; }
+        .fw-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--faint); border: 1px solid var(--faint); }
+        .fw-cell { background: var(--bg); padding: 1.75rem; text-align: center; }
+        .fw-cell .val { font-weight: 800; font-size: 2rem; }
+        .fw-cell .lbl { font-size: 0.55rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--mid); margin-top: 0.25rem; }
+        .fw-partners-cell { grid-column: 1 / -1; background: var(--bg); padding: 1.25rem; display: flex; flex-wrap: wrap; gap: 0.35rem; justify-content: center; }
+        .fw-chip { font-size: 0.5rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.25rem 0.5rem; border: 1px solid var(--faint); color: var(--mid); transition: all 0.3s; }
+        .fw-chip:hover { border-color: var(--fg); color: var(--fg); }
+
+        /* PUBLISHED */
+        .pub-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+        .pub-pill { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.5rem 1rem; border: 1px solid var(--faint); color: var(--mid); transition: all 0.3s; }
+        .pub-pill:hover { border-color: var(--fg); color: var(--fg); }
+        .pub-pill.highlight { border-color: var(--fg); color: var(--fg); font-weight: 700; }
+        .pub-note { font-size: 0.8rem; font-weight: 300; color: var(--mid); line-height: 1.7; margin-top: 1.25rem; }
+        .pub-note strong { color: var(--fg); font-weight: 500; }
+
+        /* OFF THE CLOCK */
+        .otc-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: auto auto; gap: 0.75rem; margin-top: 2rem; }
+        .otc-item { position: relative; overflow: hidden; border-radius: 4px; aspect-ratio: 4/3; }
+        .otc-item.tall { grid-row: span 2; aspect-ratio: auto; }
+        .otc-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s; filter: grayscale(60%); }
+        .otc-item:hover img { transform: scale(1.05); filter: grayscale(0%); }
+        .otc-caption { position: absolute; bottom: 0; left: 0; right: 0; padding: 1rem; background: linear-gradient(transparent, rgba(0,0,0,0.8)); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .otc-item:hover .otc-caption { transform: translateY(0); }
+        .otc-caption-title { font-weight: 600; font-size: 0.75rem; margin-bottom: 0.15rem; }
+        .otc-caption-sub { font-size: 0.6rem; font-weight: 400; color: var(--mid); }
+
+        /* CONTACT */
+        .scene-contact { min-height: 60vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 5rem 2rem; }
+        .contact-inner { max-width: 550px; }
+        .contact-heading { font-weight: 800; font-size: clamp(2.5rem, 7vw, 4.5rem); letter-spacing: -0.03em; line-height: 1; margin-bottom: 1.25rem; }
+        .contact-sub { font-size: 0.85rem; font-weight: 300; color: var(--mid); line-height: 1.8; margin-bottom: 2.5rem; }
+        .contact-pills { display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
+        .pill { font-weight: 600; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.8rem 1.5rem; border: 1px solid var(--faint); background: transparent; color: var(--fg); cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .pill:hover { border-color: var(--fg); transform: translateY(-2px); }
+        .pill.solid { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+        .pill.solid:hover { opacity: 0.85; transform: translateY(-2px); }
+
+        /* FOOTER */
+        .foot { border-top: 1px solid var(--faint); padding: 1.25rem 2.5rem; display: flex; justify-content: space-between; font-size: 0.6rem; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .nav { padding: 1.25rem 1.5rem; }
+            .nav-links { display: none; }
+            .nav-hamburger { display: block; }
+            .nav-links.open { display: flex; flex-direction: column; position: fixed; inset: 0; background: rgba(5,5,5,0.97); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); justify-content: center; align-items: center; gap: 2rem; z-index: 999; }
+            .nav-links.open a { font-size: 1rem; opacity: 1; }
+            .scene-intro { padding: 0 1.5rem; }
+            .sec-pad { padding: 4rem 1.5rem; }
+            .wid-grid { grid-template-columns: 1fr; }
+            .fw-grid { grid-template-columns: 1fr; }
+            .otc-grid { grid-template-columns: 1fr 1fr; }
+            .otc-item.tall { grid-row: span 1; aspect-ratio: 4/3; }
+            .foot { flex-direction: column; gap: 0.5rem; align-items: center; }
+        }
+        @media (max-width: 480px) { .otc-grid { grid-template-columns: 1fr; } }
+        .wa { will-change: transform, opacity; }
+    </style>
+</head>
+<body>
+<div id="loader">
+    <div class="loader-name">Noah Hunter</div>
+    <div class="loader-bar"><div class="loader-fill" id="loaderFill"></div></div>
+</div>
+
+<nav class="nav">
+    <div class="nav-logo">Noah Hunter</div>
+    <ul class="nav-links" id="navLinks">
+        <li><a href="#work">What I Do</a></li>
+        <li><a href="#fw">Final Weapon</a></li>
+        <li><a href="#life">Off the Clock</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="nav-hamburger" id="menuBtn" aria-label="Menu">
+        <svg width="22" height="14" viewBox="0 0 22 14" fill="none">
+            <line y1="1" x2="22" y2="1" stroke="#ededed" stroke-width="1.5"/>
+            <line y1="7" x2="22" y2="7" stroke="#ededed" stroke-width="1.5"/>
+            <line y1="13" x2="22" y2="13" stroke="#ededed" stroke-width="1.5"/>
+        </svg>
+    </button>
+</nav>
+
+<section class="scene-intro">
+    <p class="intro-greeting wa">Hey, I'm</p>
+    <h1 class="intro-name">
+        <span class="ln"><span>Noah</span></span>
+        <span class="ln"><span>Hunter.</span></span>
+    </h1>
+    <div class="intro-typing-wrap wa">
+        <span class="intro-typing-label">I am</span>
+        <span class="intro-typing-role" id="typingRole"></span>
+    </div>
+    <div class="intro-scroll wa">
+        <span class="intro-scroll-text">Scroll</span>
+        <div class="intro-scroll-line"></div>
+    </div>
+</section>
+
+<section class="sec-border" id="work">
+    <div class="sec-pad">
+        <p class="eyebrow wa">What I Do</p>
+        <h2 class="sec-title wa">Data & AI Engineering<br>at North Highland.</h2>
+        <div class="wid-grid">
+            <div class="wid-text wa">
+                <p>I'm an Analyst on North Highland's <strong>Data & AI Engineering</strong> team, based in Dallas, Texas. I graduated in 2025 from The University of Oklahoma with a BBA and a Master of Science in Management of Information Technology.</p>
+                <p>My areas of focus span <strong>data engineering, data visualization, data science, artificial intelligence, machine learning</strong>, and related technologies. Day to day, that means building <strong>Power BI dashboards</strong> from the ground up, writing complex <strong>DAX frameworks</strong>, integrating <strong>Snowflake</strong> data pipelines, and resolving the kinds of composite model conflicts that make people want to throw their laptop out a window.</p>
+                <p>I've also built capability presentations around <strong>Azure Document Intelligence</strong> and OCR — including a real-world signature detection case study combining Azure, GPT vision, and PyTorch. If there's a way to make data smarter, I'm probably already poking at it.</p>
+            </div>
+            <div class="wid-sidebar wa">
+                <div class="wid-sidebar-title">Toolkit</div>
+                <div class="wid-sidebar-item"><span class="skill">Power BI</span><span class="level">Primary</span></div>
+                <div class="wid-sidebar-item"><span class="skill">DAX</span><span class="level">Advanced</span></div>
+                <div class="wid-sidebar-item"><span class="skill">Snowflake</span><span class="level">Production</span></div>
+                <div class="wid-sidebar-item"><span class="skill">Azure AI / OCR</span><span class="level">Capability Lead</span></div>
+                <div class="wid-sidebar-item"><span class="skill">Python</span><span class="level">Tooling</span></div>
+                <div class="wid-sidebar-item"><span class="skill">Tabular Editor</span><span class="level">Modeling</span></div>
+                <div class="wid-sidebar-item"><span class="skill">DAX Studio</span><span class="level">Performance</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="sec-border scene-fw" id="fw">
+    <div class="sec-pad">
+        <p class="eyebrow wa">From Passion to Action</p>
+        <h2 class="sec-title wa">Final Weapon — My Vision<br>for Modern Games Media.</h2>
+        <div class="fw-grid">
+            <div class="fw-text wa">
+                <p>I founded <strong>Final Weapon</strong> at 16 years old because Japanese gaming coverage in English was scattered, shallow, and riddled with clickbait. I wanted to build a home for nonsense-free news, reviews, and insights about the video game medium and niche entertainment.</p>
+                <p>Since launch in 2019, we've grown into a <strong>Metacritic-listed publication</strong> with a massive worldwide audience. As Editor-in-Chief, I lead a talented team of writers, content creators, and designers — overseeing all content production, editorial strategy, and day-to-day operations. I balance creative direction with technical responsibilities, making sure both the platform and its content keep evolving.</p>
+                <p>Through Final Weapon, I've built countless connections across the industry and gained deep experience in <strong>project management, marketing, and industry relations</strong>. I work closely with major publishers and developers, and represent Final Weapon at leading events worldwide — including <strong>Summer Game Fest</strong>, <strong>The Game Awards</strong>, and more.</p>
+                <a href="https://finalweapon.net" target="_blank" rel="noopener" class="fw-cta">Read Final Weapon →</a>
+            </div>
+            <div class="fw-stats wa">
+                <div class="fw-cell"><div class="val">7</div><div class="lbl">Years Running</div></div>
+                <div class="fw-cell"><div class="val">60+</div><div class="lbl">Writers All-Time</div></div>
+                <div class="fw-cell"><div class="val">10M+</div><div class="lbl">Lifetime Views</div></div>
+                <div class="fw-cell"><div class="val">3K+</div><div class="lbl">Articles Published*</div></div>
+                <div class="fw-partners-cell">
+                    <div style="width:100%; text-align:center; margin-bottom:0.5rem; font-size:0.5rem; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:var(--mid);">Partners We Work With</div>
+                    <span class="fw-chip">Nintendo</span>
+                    <span class="fw-chip">PlayStation</span>
+                    <span class="fw-chip">Square Enix</span>
+                    <span class="fw-chip">Capcom</span>
+                    <span class="fw-chip">SEGA</span>
+                    <span class="fw-chip">Atlus</span>
+                    <span class="fw-chip">Bandai Namco</span>
+                    <span class="fw-chip">Koei Tecmo</span>
+                    <span class="fw-chip">Xbox</span>
+                    <span class="fw-chip">EA</span>
+                    <span class="fw-chip">Arc System Works</span>
+                    <span class="fw-chip">NIS America</span>
+                    <span class="fw-chip">XSEED</span>
+                </div>
+            </div>
+        </div>
+        <p style="font-size: 0.55rem; color: var(--mid); margin-top: 1rem; opacity: 0.6;">*Across Final Weapon, IGN, and all other outlets combined.</p>
+        <div style="margin-top: 4rem; padding-top: 3rem; border-top: 1px solid var(--faint);">
+            <p class="eyebrow wa">Also Published At</p>
+            <p class="pub-note wa">Outside of Final Weapon, I'm a <strong>regular contributor at IGN</strong>, where I've worked with the Tech, Commerce, IGN Store, IGN Rewards, and Evergreen teams. I run the Daily Deals column and have assisted the Database Management team on IGN Playlist.</p>
+            <div class="pub-row wa">
+                <span class="pub-pill highlight">IGN — Regular Contributor</span>
+                <span class="pub-pill">Hard Drive</span>
+                <span class="pub-pill">TheGamer</span>
+                <span class="pub-pill">Attack of the Fanboy</span>
+                <span class="pub-pill">JapanBound</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="sec-border" id="life">
+    <div class="sec-pad">
+        <p class="eyebrow wa">Off the Clock</p>
+        <h2 class="sec-title wa">There's more to life<br>than dashboards.</h2>
+        <div class="otc-grid">
+            <div class="otc-item tall wa">
+                <img src="img/kojima.jpg" alt="Meeting Hideo Kojima" loading="lazy">
+                <div class="otc-caption">
+                    <div class="otc-caption-title">Meeting Hideo Kojima</div>
+                    <div class="otc-caption-sub">The Game Awards, 2025</div>
+                </div>
+            </div>
+            <div class="otc-item wa">
+                <img src="img/ou-game.jpg" alt="Red River Rivalry" loading="lazy">
+                <div class="otc-caption">
+                    <div class="otc-caption-title">Red River Rivalry</div>
+                    <div class="otc-caption-sub">OU vs. Texas · Cotton Bowl</div>
+                </div>
+            </div>
+            <div class="otc-item wa">
+                <img src="img/dq-event.jpg" alt="Dragon Quest III event" loading="lazy">
+                <div class="otc-caption">
+                    <div class="otc-caption-title">Dragon Quest III Preview</div>
+                    <div class="otc-caption-sub">Press Event · Square Enix</div>
+                </div>
+            </div>
+            <div class="otc-item wa">
+                <img src="img/japan-forge.jpg" alt="Knife forging in Japan" loading="lazy">
+                <div class="otc-caption">
+                    <div class="otc-caption-title">Knife Forging in Japan</div>
+                    <div class="otc-caption-sub">Traditional Blacksmith Workshop</div>
+                </div>
+            </div>
+            <div class="otc-item wa">
+                <img src="img/ou-family.jpg" alt="Family at OU game" loading="lazy">
+                <div class="otc-caption">
+                    <div class="otc-caption-title">Sooner Born, Sooner Bred</div>
+                    <div class="otc-caption-sub">Owen Field · Norman, OK</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="sec-border scene-contact" id="contact">
+    <div class="contact-inner">
+        <h2 class="contact-heading wa">Let's talk.</h2>
+        <p class="contact-sub wa">Analytics, editorial, or something else entirely — I'm always open to meeting curious people.</p>
+        <div class="contact-pills wa">
+            <a href="mailto:noahbhunter1883@gmail.com" class="pill solid">Email Me</a>
+            <a href="https://www.linkedin.com/in/noahbhunter/" target="_blank" rel="noopener" class="pill">LinkedIn ↗</a>
+            <a href="https://finalweapon.net" target="_blank" rel="noopener" class="pill">Final Weapon ↗</a>
+        </div>
+    </div>
+</section>
+
+<footer class="foot">
+    <span>© 2026 Noah Hunter</span>
+    <span>Dallas, Texas</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+<script>
+    gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+    const fill = document.getElementById('loaderFill');
+    let prog = 0;
+    const li = setInterval(() => {
+        prog += Math.random() * 30;
+        if (prog >= 100) { prog = 100; clearInterval(li);
+            setTimeout(() => { gsap.to('#loader', { opacity: 0, duration: 0.5, onComplete: () => { document.getElementById('loader').style.display = 'none'; runIntro(); }}); }, 250);
+        }
+        fill.style.width = prog + '%';
+    }, 180);
+
+    function runIntro() {
+        const tl = gsap.timeline();
+        tl.to('.intro-name .ln span', { y: 0, duration: 1.1, stagger: 0.12, ease: 'power4.out' })
+          .to('.intro-greeting', { opacity: 1, duration: 0.7, ease: 'power2.out' }, '-=0.6')
+          .to('.intro-typing-wrap', { opacity: 1, duration: 0.6 }, '-=0.3')
+          .to('.intro-scroll', { opacity: 1, duration: 0.5 }, '-=0.2');
+        startTyping();
+    }
+
+    const roles = ['a Data Scientist.', 'an Editor-in-Chief.', 'a Journalist.', 'a Problem Solver.', 'a Power BI Developer.', 'the Bone of My Sword.', 'a Data Engineer.', 'a Storyteller.', 'a Sooner.'];
+    let roleIdx = 0;
+    const typeEl = document.getElementById('typingRole');
+    function startTyping() { typeRole(roles[0]); }
+    function typeRole(text) {
+        let i = 0; typeEl.textContent = '';
+        const t = setInterval(() => { typeEl.textContent += text[i]; i++; if (i >= text.length) { clearInterval(t); setTimeout(() => deleteRole(text), 2000); } }, 70);
+    }
+    function deleteRole(text) {
+        let i = text.length;
+        const t = setInterval(() => { i--; typeEl.textContent = text.substring(0, i); if (i <= 0) { clearInterval(t); roleIdx = (roleIdx + 1) % roles.length; setTimeout(() => typeRole(roles[roleIdx]), 400); } }, 35);
+    }
+
+    gsap.utils.toArray('.wa').forEach(el => {
+        gsap.from(el, { scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }, y: 35, opacity: 0, duration: 0.9, ease: 'power3.out' });
+    });
+
+    gsap.to('.intro-name', {
+        scrollTrigger: { trigger: '.scene-intro', start: 'top top', end: 'bottom top', scrub: true },
+        y: 120, opacity: 0, ease: 'none'
+    });
+
+    const menuBtn = document.getElementById('menuBtn');
+    const navLinks = document.getElementById('navLinks');
+    menuBtn.addEventListener('click', () => navLinks.classList.toggle('open'));
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', function(e) { e.preventDefault(); const t = document.querySelector(this.getAttribute('href')); if (t) gsap.to(window, { scrollTo: { y: t }, duration: 1, ease: 'power3.inOut' }); });
+    });
+</script>
+</body>
+</html>
