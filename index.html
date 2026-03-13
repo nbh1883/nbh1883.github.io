@@ -4,153 +4,376 @@
 
     You opened the source code. Respect.
     This site was forged by Gilgamesh,
-    the humble junior analyst
-    to Noah Hunter.
+    the humble junior analyst to Noah Hunter.
 
     Try the Konami Code. You know the one.
     ↑ ↑ ↓ ↓ ← → ← → B A
 -->
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Noah Hunter</title>
-    <meta name="description" content="Noah Hunter — Data & AI Consultant at North Highland. Co-Founder & Editor-in-Chief of Final Weapon.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --bg: #050505; --fg: #ededed; --mid: #777;
-            --faint: rgba(255,255,255,0.1); --ghost: rgba(255,255,255,0.04);
-            --sans: 'Outfit', system-ui, sans-serif;
-            --mono: 'Space Mono', monospace;
-        }
-        html { font-size: 16px; overflow-x: hidden; }
-        body { background: var(--bg); color: var(--fg); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
-        ::selection { background: var(--fg); color: var(--bg); }
-        a { color: inherit; text-decoration: none; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noah Hunter</title>
+<meta name="description" content="Noah Hunter — Data & AI Consultant at North Highland. Co-Founder & Editor-in-Chief of Final Weapon.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --bg: #050505;
+    --fg: #ededed;
+    --mid: #aaa;
+    --dim: #666;
+    --faint: rgba(255,255,255,0.08);
+    --ghost: rgba(255,255,255,0.03);
+    --sans: 'Outfit', system-ui, sans-serif;
+    --mono: 'Space Mono', monospace;
+}
+html { font-size: 16px; }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+::selection { background: var(--fg); color: var(--bg); }
+a { color: inherit; text-decoration: none; }
 
-        /* LOADER */
-        #loader { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 1.25rem; }
-        .loader-name { font-weight: 800; font-size: 1.1rem; letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.3; }
-        .loader-bar { width: 100px; height: 1px; background: rgba(255,255,255,0.08); overflow: hidden; }
-        .loader-fill { width: 0%; height: 100%; background: var(--fg); }
+/* ═══ SCROLL PROGRESS ═══ */
+#scrollProgress {
+    position: fixed; top: 0; left: 0; height: 2px;
+    background: var(--fg); z-index: 9998;
+    width: 0%; transition: none;
+    pointer-events: none;
+}
 
-        /* NAV */
-        .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; mix-blend-mode: difference; }
-        .nav-logo { font-weight: 700; font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; }
-        .nav-links { display: flex; gap: 2.5rem; list-style: none; }
-        .nav-links a { font-size: 0.6rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.4; transition: opacity 0.3s; }
-        .nav-links a:hover { opacity: 1; }
-        .nav-hamburger { display: none; background: none; border: none; cursor: pointer; }
+/* ═══ LOADER ═══ */
+#loader {
+    position: fixed; inset: 0; background: var(--bg); z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 1.5rem;
+}
+.loader-counter {
+    font-weight: 800; font-size: clamp(3rem, 8vw, 6rem);
+    letter-spacing: -0.03em; opacity: 0.15;
+    font-variant-numeric: tabular-nums;
+}
+.loader-bar { width: 120px; height: 1px; background: rgba(255,255,255,0.06); overflow: hidden; }
+.loader-fill { width: 0%; height: 100%; background: var(--fg); }
 
-        /* INTRO */
-        .scene-intro { height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 2.5rem; position: relative; }
-        .scene-intro::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 30px 30px; pointer-events: none; }
-        .intro-greeting { font-size: 1.1rem; font-weight: 300; color: var(--mid); margin-bottom: 1.25rem; opacity: 0; }
-        .intro-name { font-weight: 800; font-size: clamp(5rem, 14vw, 12rem); line-height: 0.9; letter-spacing: -0.04em; }
-        .intro-name .ln { display: block; overflow: hidden; }
-        .intro-name .ln span { display: inline-block; transform: translateY(115%); }
-        .intro-typing-wrap { margin-top: 2.5rem; display: flex; align-items: baseline; gap: 0.5rem; opacity: 0; }
-        .intro-typing-label { font-size: clamp(1.1rem, 2.5vw, 1.5rem); font-weight: 300; color: var(--mid); }
-        .intro-typing-role { font-family: var(--mono); font-size: clamp(1.1rem, 2.5vw, 1.5rem); color: var(--fg); border-right: 2px solid var(--fg); padding-right: 3px; animation: blink-caret 0.75s step-end infinite; }
-        @keyframes blink-caret { 50% { border-color: transparent; } }
-        .intro-scroll { position: absolute; bottom: 2.5rem; left: 2.5rem; display: flex; align-items: center; gap: 1rem; opacity: 0; }
-        .intro-scroll-text { font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--mid); }
-        .intro-scroll-line { width: 60px; height: 1px; background: var(--faint); position: relative; overflow: hidden; }
-        .intro-scroll-line::after { content: ''; position: absolute; left: 0; top: 0; width: 30px; height: 1px; background: var(--fg); animation: slide-line 2s ease-in-out infinite; }
-        @keyframes slide-line { 0% { transform: translateX(-30px); } 100% { transform: translateX(60px); } }
+/* ═══ NAV ═══ */
+.nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 1.5rem 2.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    mix-blend-mode: difference;
+}
+.nav-logo { font-weight: 700; font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; }
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a {
+    font-size: 0.6rem; font-weight: 500; letter-spacing: 0.2em;
+    text-transform: uppercase; opacity: 0.4; transition: opacity 0.3s;
+}
+.nav-links a:hover { opacity: 1; }
+.nav-hamburger { display: none; background: none; border: none; cursor: pointer; }
 
-        /* UTILS */
-        .sec-pad { max-width: 1100px; margin: 0 auto; padding: 6rem 2.5rem; }
-        .sec-border { border-top: 1px solid var(--faint); }
-        .eyebrow { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; color: var(--mid); margin-bottom: 1rem; }
-        .sec-title { font-weight: 800; font-size: clamp(1.8rem, 4vw, 3rem); letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 2rem; }
+/* ═══ HERO ═══ */
+.hero {
+    height: 100vh; display: flex; flex-direction: column;
+    justify-content: center; padding: 0 clamp(1.5rem, 5vw, 4rem);
+    position: relative;
+}
+.hero::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 28px 28px; pointer-events: none;
+}
+.hero-greeting {
+    font-size: clamp(1rem, 2vw, 1.2rem); font-weight: 300;
+    color: var(--dim); margin-bottom: 1.5rem; opacity: 0;
+}
+.hero-name {
+    font-weight: 800; font-size: clamp(5rem, 14vw, 13rem);
+    line-height: 1; letter-spacing: -0.05em;
+}
+.hero-name .ln { display: block; clip-path: inset(-10% -10% -20% -10%); padding-bottom: 0.1em; }
+.hero-name .ln span {
+    display: inline-block; transform: translateY(120%);
+    will-change: transform;
+}
+.hero-typing {
+    margin-top: clamp(2rem, 4vw, 3rem);
+    display: flex; align-items: baseline; gap: 0.5rem; opacity: 0;
+}
+.hero-typing-static {
+    font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: 300; color: var(--dim);
+}
+.hero-typing-dynamic {
+    font-family: var(--mono); font-size: clamp(1.2rem, 3vw, 1.8rem);
+    color: var(--fg);
+    border-right: 2px solid var(--fg); padding-right: 3px;
+    animation: blink 0.75s step-end infinite;
+}
+@keyframes blink { 50% { border-color: transparent; } }
 
-        /* WHAT I DO */
-        .wid-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 1rem; }
-        .wid-text p { font-size: 0.9rem; font-weight: 300; line-height: 1.9; color: var(--mid); margin-bottom: 1rem; }
-        .wid-text p strong { color: var(--fg); font-weight: 500; }
-        .wid-sidebar { border: 1px solid var(--faint); padding: 2rem; }
-        .wid-sidebar-title { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mid); margin-bottom: 1.5rem; }
-        .wid-sidebar-item { display: flex; justify-content: space-between; align-items: baseline; padding: 0.6rem 0; border-bottom: 1px solid var(--ghost); }
-        .wid-sidebar-item:last-child { border-bottom: none; }
-        .wid-sidebar-item .skill { font-size: 0.8rem; font-weight: 500; }
-        .wid-sidebar-item .level { font-size: 0.55rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); }
+.hero-scroll {
+    position: absolute; bottom: 2.5rem; left: clamp(1.5rem, 5vw, 4rem);
+    display: flex; align-items: center; gap: 1rem; opacity: 0;
+}
+.hero-scroll span {
+    font-size: 0.5rem; letter-spacing: 0.4em;
+    text-transform: uppercase; color: var(--dim);
+}
+.scroll-bar {
+    width: 50px; height: 1px; background: var(--faint);
+    position: relative; overflow: hidden;
+}
+.scroll-bar::after {
+    content: ''; position: absolute; top: 0; left: -30px;
+    width: 30px; height: 1px; background: var(--fg);
+    animation: slidebar 2s ease-in-out infinite;
+}
+@keyframes slidebar { to { left: 50px; } }
 
-        /* FW */
-        .scene-fw { position: relative; overflow: hidden; }
-        .scene-fw::before { content: 'FW'; position: absolute; font-weight: 800; font-size: clamp(15rem, 35vw, 45rem); color: var(--ghost); right: -3%; top: 50%; transform: translateY(-50%); line-height: 1; pointer-events: none; }
-        .fw-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 4rem; align-items: start; position: relative; z-index: 1; }
-        .fw-text p { font-size: 0.9rem; font-weight: 300; line-height: 1.9; color: var(--mid); margin-bottom: 1rem; }
-        .fw-text p strong { color: var(--fg); font-weight: 500; }
-        .fw-cta { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem; font-weight: 600; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.85rem 1.75rem; border: 1px solid var(--fg); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        .fw-cta:hover { background: var(--fg); color: var(--bg); gap: 1rem; }
-        .fw-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--faint); border: 1px solid var(--faint); }
-        .fw-cell { background: var(--bg); padding: 1.75rem; text-align: center; }
-        .fw-cell .val { font-weight: 800; font-size: 2rem; }
-        .fw-cell .lbl { font-size: 0.55rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--mid); margin-top: 0.25rem; }
-        .fw-partners-cell { grid-column: 1 / -1; background: var(--bg); padding: 1.25rem; display: flex; flex-wrap: wrap; gap: 0.35rem; justify-content: center; }
-        .fw-chip { font-size: 0.5rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.25rem 0.5rem; border: 1px solid var(--faint); color: var(--mid); transition: all 0.3s; }
-        .fw-chip:hover { border-color: var(--fg); color: var(--fg); }
+/* ═══ CONTENT SECTIONS (no borders, spacing-driven) ═══ */
+.content-wrap { max-width: 1200px; margin: 0 auto; padding: 0 clamp(1.5rem, 5vw, 4rem); }
 
-        /* PUBLISHED */
-        .pub-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
-        .pub-pill { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.5rem 1rem; border: 1px solid var(--faint); color: var(--mid); transition: all 0.3s; }
-        .pub-pill:hover { border-color: var(--fg); color: var(--fg); }
-        .pub-pill.highlight { border-color: var(--fg); color: var(--fg); font-weight: 700; }
-        .pub-note { font-size: 0.8rem; font-weight: 300; color: var(--mid); line-height: 1.7; margin-top: 1.25rem; }
-        .pub-note strong { color: var(--fg); font-weight: 500; }
+.scene {
+    padding: clamp(6rem, 12vh, 10rem) 0;
+    position: relative;
+}
 
-        /* OFF THE CLOCK */
-        .otc-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: auto auto; gap: 0.75rem; margin-top: 2rem; }
-        .otc-item { position: relative; overflow: hidden; border-radius: 4px; aspect-ratio: 4/3; }
-        .otc-item.tall { grid-row: span 2; aspect-ratio: auto; }
-        .otc-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s; filter: grayscale(60%); }
-        .otc-item:hover img { transform: scale(1.05); filter: grayscale(0%); }
-        .otc-caption { position: absolute; bottom: 0; left: 0; right: 0; padding: 1rem; background: linear-gradient(transparent, rgba(0,0,0,0.8)); transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        .otc-item:hover .otc-caption { transform: translateY(0); }
-        .otc-caption-title { font-weight: 600; font-size: 0.75rem; margin-bottom: 0.15rem; }
-        .otc-caption-sub { font-size: 0.6rem; font-weight: 400; color: var(--mid); }
+/* Section headings - word split animation */
+.scene-eyebrow {
+    font-size: 0.6rem; font-weight: 600; letter-spacing: 0.35em;
+    text-transform: uppercase; color: var(--dim); margin-bottom: 1.25rem;
+}
+.scene-heading {
+    font-weight: 800; font-size: clamp(2rem, 5vw, 3.5rem);
+    letter-spacing: -0.03em; line-height: 1.15;
+}
+.scene-heading .word, .contact-heading .word {
+    display: inline-block; overflow: hidden;
+    margin-right: 0.15em; padding: 0 0.05em;
+}
+.scene-heading .word span, .contact-heading .word span {
+    display: inline-block; transform: translateY(110%);
+    will-change: transform;
+}
 
-        /* CONTACT */
-        .scene-contact { min-height: 60vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 5rem 2rem; }
-        .contact-inner { max-width: 550px; }
-        .contact-heading { font-weight: 800; font-size: clamp(2.5rem, 7vw, 4.5rem); letter-spacing: -0.03em; line-height: 1; margin-bottom: 1.25rem; }
-        .contact-sub { font-size: 0.85rem; font-weight: 300; color: var(--mid); line-height: 1.8; margin-bottom: 2.5rem; }
-        .contact-pills { display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
-        .pill { font-weight: 600; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.8rem 1.5rem; border: 1px solid var(--faint); background: transparent; color: var(--fg); cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        .pill:hover { border-color: var(--fg); transform: translateY(-2px); }
-        .pill.solid { background: var(--fg); color: var(--bg); border-color: var(--fg); }
-        .pill.solid:hover { opacity: 0.85; transform: translateY(-2px); }
+/* Body text — readable */
+.body-text {
+    font-size: clamp(0.9rem, 1.5vw, 1rem); font-weight: 300;
+    line-height: 2; color: var(--mid); margin-bottom: 1.25rem;
+    max-width: 600px;
+}
+.body-text strong { color: var(--fg); font-weight: 500; }
 
-        /* FOOTER */
-        .foot { border-top: 1px solid var(--faint); padding: 1.25rem 2.5rem; display: flex; justify-content: space-between; font-size: 0.6rem; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); }
+/* ═══ WHAT I DO ═══ */
+.work-layout {
+    display: grid; grid-template-columns: 1.2fr 0.8fr;
+    gap: clamp(2rem, 5vw, 5rem); margin-top: 2.5rem;
+    align-items: start;
+}
+.toolkit {
+    border: 1px solid var(--faint); padding: clamp(1.5rem, 3vw, 2.5rem);
+    position: relative;
+}
+.toolkit::before {
+    content: 'TOOLKIT'; position: absolute;
+    top: -0.5rem; left: 1.5rem;
+    background: var(--bg); padding: 0 0.5rem;
+    font-size: 0.5rem; font-weight: 700;
+    letter-spacing: 0.25em; color: var(--dim);
+}
+.tk-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--ghost);
+}
+.tk-row:last-child { border-bottom: none; }
+.tk-name { font-size: 0.85rem; font-weight: 500; }
+.tk-level {
+    font-size: 0.5rem; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--dim);
+}
 
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .nav { padding: 1.25rem 1.5rem; }
-            .nav-links { display: none; }
-            .nav-hamburger { display: block; }
-            .nav-links.open { display: flex; flex-direction: column; position: fixed; inset: 0; background: rgba(5,5,5,0.97); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); justify-content: center; align-items: center; gap: 2rem; z-index: 999; }
-            .nav-links.open a { font-size: 1rem; opacity: 1; }
-            .scene-intro { padding: 0 1.5rem; }
-            .sec-pad { padding: 4rem 1.5rem; }
-            .wid-grid { grid-template-columns: 1fr; }
-            .fw-grid { grid-template-columns: 1fr; }
-            .otc-grid { grid-template-columns: 1fr 1fr; }
-            .otc-item.tall { grid-row: span 1; aspect-ratio: 4/3; }
-            .foot { flex-direction: column; gap: 0.5rem; align-items: center; }
-        }
-        @media (max-width: 480px) { .otc-grid { grid-template-columns: 1fr; } }
-        .wa { will-change: transform, opacity; }
-    </style>
+/* ═══ FW SECTION ═══ */
+.fw-bg-text {
+    position: absolute; right: -5%; top: 50%; transform: translateY(-50%);
+    font-weight: 800; font-size: clamp(12rem, 30vw, 40rem);
+    color: var(--ghost); line-height: 1; pointer-events: none;
+    user-select: none;
+}
+.fw-layout {
+    display: grid; grid-template-columns: 1.3fr 1fr;
+    gap: clamp(2rem, 5vw, 5rem); margin-top: 2.5rem;
+    align-items: start; position: relative; z-index: 1;
+}
+.fw-stats-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px; background: var(--faint); border: 1px solid var(--faint);
+}
+.fw-stat {
+    background: var(--bg); padding: clamp(1.25rem, 3vw, 2rem);
+    text-align: center;
+}
+.fw-stat .num {
+    font-weight: 800; font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-variant-numeric: tabular-nums;
+}
+.fw-stat .lbl {
+    font-size: 0.5rem; font-weight: 600; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--dim); margin-top: 0.3rem;
+}
+.fw-partners {
+    grid-column: 1 / -1; background: var(--bg);
+    padding: 1.5rem; display: flex; flex-direction: column;
+    align-items: center; gap: 0.6rem;
+}
+.fw-partners-label {
+    font-size: 0.45rem; font-weight: 700; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--dim);
+}
+.fw-partners-list {
+    display: flex; flex-wrap: wrap; gap: 0.35rem; justify-content: center;
+}
+.fw-chip {
+    font-size: 0.5rem; font-weight: 500; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 0.3rem 0.6rem;
+    border: 1px solid var(--faint); color: var(--dim);
+    transition: all 0.3s;
+}
+.fw-chip:hover { border-color: var(--fg); color: var(--fg); }
+.fw-footnote {
+    font-size: 0.5rem; color: var(--dim); margin-top: 1.5rem; opacity: 0.7;
+}
+.fw-cta {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    margin-top: 1.5rem; font-weight: 600; font-size: 0.7rem;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 0.9rem 2rem; border: 1px solid var(--fg);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fw-cta:hover { background: var(--fg); color: var(--bg); gap: 1rem; }
+
+/* Published section */
+.pub-section { margin-top: clamp(4rem, 8vh, 6rem); }
+.pub-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
+.pub-pill {
+    font-size: 0.7rem; font-weight: 500; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 0.5rem 1rem;
+    border: 1px solid var(--faint); color: var(--dim);
+    transition: all 0.3s;
+}
+.pub-pill:hover { border-color: var(--fg); color: var(--fg); }
+.pub-pill.hl { border-color: var(--fg); color: var(--fg); font-weight: 700; }
+
+/* ═══ PHOTO GALLERY — horizontal drag ═══ */
+.gallery-outer {
+    overflow: hidden; cursor: grab;
+    padding: 2rem 0;
+}
+.gallery-outer::-webkit-scrollbar { display: none; }
+.gallery-outer:active { cursor: grabbing; }
+
+/* Game canvas */
+#gobCanvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+#gobLevelAnnounce { transition: opacity 0.5s; }
+.gallery-track {
+    display: flex; gap: clamp(0.75rem, 1.5vw, 1.25rem);
+    padding: 0 clamp(1.5rem, 5vw, 4rem);
+    will-change: transform;
+    user-select: none;
+}
+.gallery-item {
+    flex-shrink: 0;
+    width: clamp(280px, 35vw, 450px);
+    position: relative; overflow: hidden;
+    border-radius: 6px;
+}
+.gallery-item img {
+    width: 100%; aspect-ratio: 4/3; object-fit: cover;
+    display: block;
+    filter: grayscale(50%) brightness(0.9);
+    transition: filter 0.5s, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+}
+.gallery-item:hover img {
+    filter: grayscale(0%) brightness(1);
+    transform: scale(1.04);
+}
+.gallery-caption {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 1.25rem;
+    background: linear-gradient(transparent, rgba(0,0,0,0.85));
+    transform: translateY(100%);
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.gallery-item:hover .gallery-caption { transform: translateY(0); }
+.gallery-cap-title { font-weight: 600; font-size: 0.8rem; }
+.gallery-cap-sub { font-size: 0.6rem; color: var(--dim); margin-top: 0.15rem; }
+
+.gallery-hint {
+    text-align: center; margin-top: 1rem;
+    font-size: 0.5rem; letter-spacing: 0.3em;
+    text-transform: uppercase; color: var(--dim);
+}
+
+/* ═══ CONTACT ═══ */
+.scene-contact {
+    min-height: 70vh; display: flex; align-items: center;
+    justify-content: center; text-align: center;
+}
+.contact-inner { max-width: 600px; }
+.contact-heading {
+    font-weight: 800; font-size: clamp(3rem, 8vw, 5.5rem);
+    letter-spacing: -0.04em; line-height: 0.95;
+    margin-bottom: 1.5rem;
+}
+.contact-sub {
+    font-size: 1rem; font-weight: 300; color: var(--mid);
+    line-height: 1.8; margin-bottom: 3rem;
+}
+.contact-pills { display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
+.pill {
+    font-weight: 600; font-size: 0.65rem; letter-spacing: 0.12em;
+    text-transform: uppercase; padding: 0.85rem 1.75rem;
+    border: 1px solid var(--faint); background: transparent;
+    color: var(--fg); cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pill:hover { border-color: var(--fg); transform: translateY(-3px); }
+.pill.solid { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.pill.solid:hover { opacity: 0.85; transform: translateY(-3px); }
+
+/* ═══ FOOTER ═══ */
+.foot {
+    padding: 1.5rem clamp(1.5rem, 5vw, 4rem);
+    display: flex; justify-content: space-between;
+    font-size: 0.55rem; font-weight: 400; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--dim);
+}
+
+/* ═══ RESPONSIVE ═══ */
+@media (max-width: 768px) {
+    .nav { padding: 1.25rem 1.5rem; }
+    .nav-links { display: none; }
+    .nav-hamburger { display: block; }
+    .nav-links.open {
+        display: flex; flex-direction: column; position: fixed; inset: 0;
+        background: rgba(5,5,5,0.97); backdrop-filter: blur(16px);
+        justify-content: center; align-items: center; gap: 2rem; z-index: 999;
+    }
+    .nav-links.open a { font-size: 1rem; opacity: 1; }
+    .work-layout { grid-template-columns: 1fr; }
+    .fw-layout { grid-template-columns: 1fr; }
+    .foot { flex-direction: column; gap: 0.5rem; align-items: center; }
+}
+</style>
 </head>
 <body>
+
+<div id="scrollProgress"></div>
+
 <div id="loader">
-    <div class="loader-name">Noah Hunter</div>
+    <div class="loader-counter" id="loaderCount">0</div>
     <div class="loader-bar"><div class="loader-fill" id="loaderFill"></div></div>
 </div>
 
@@ -171,86 +394,93 @@
     </button>
 </nav>
 
-<section class="scene-intro">
-    <p class="intro-greeting wa">Hey, I'm</p>
-    <h1 class="intro-name">
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+    <p class="hero-greeting">Hey, I'm</p>
+    <h1 class="hero-name">
         <span class="ln"><span>Noah</span></span>
         <span class="ln"><span>Hunter.</span></span>
     </h1>
-    <div class="intro-typing-wrap wa">
-        <span class="intro-typing-label">I am</span>
-        <span class="intro-typing-role" id="typingRole"></span>
+    <div class="hero-typing">
+        <span class="hero-typing-static">I am</span>
+        <span class="hero-typing-dynamic" id="typingRole"></span>
     </div>
-    <div class="intro-scroll wa">
-        <span class="intro-scroll-text">Scroll</span>
-        <div class="intro-scroll-line"></div>
+    <div class="hero-scroll">
+        <span>Scroll</span>
+        <div class="scroll-bar"></div>
     </div>
 </section>
 
-<section class="sec-border" id="work">
-    <div class="sec-pad">
-        <p class="eyebrow wa">What I Do</p>
-        <h2 class="sec-title wa">Data & AI Engineering<br>at North Highland.</h2>
-        <div class="wid-grid">
-            <div class="wid-text wa">
-                <p>I'm an Analyst on North Highland's <strong>Data & AI Engineering</strong> team, based in Dallas, Texas. I graduated in 2025 from The University of Oklahoma with a BBA and a Master of Science in Management of Information Technology.</p>
-                <p>My areas of focus span <strong>data engineering, data visualization, data science, artificial intelligence, machine learning</strong>, and related technologies. Day to day, that means building <strong>Power BI dashboards</strong> from the ground up, writing complex <strong>DAX frameworks</strong>, integrating <strong>Snowflake</strong> data pipelines, and resolving the kinds of composite model conflicts that make people want to throw their laptop out a window.</p>
-                <p>I've also built capability presentations around <strong>Azure Document Intelligence</strong> and OCR — including a real-world signature detection case study combining Azure, GPT vision, and PyTorch. If there's a way to make data smarter, I'm probably already poking at it.</p>
+<!-- ═══ WHAT I DO ═══ -->
+<section class="scene" id="work">
+    <div class="content-wrap">
+        <p class="scene-eyebrow">What I Do</p>
+        <h2 class="scene-heading split-heading">Data & AI Engineering at North Highland.</h2>
+        <div class="work-layout">
+            <div>
+                <p class="body-text">I'm an Analyst on North Highland's <strong>Data & AI Engineering</strong> team, based in Dallas, Texas. I graduated in 2025 from The University of Oklahoma with a BBA and a Master of Science in Management of Information Technology.</p>
+                <p class="body-text">My areas of focus span <strong>data engineering, data visualization, data science, artificial intelligence, machine learning</strong>, and related technologies. Day to day, that means building <strong>Power BI dashboards</strong> from the ground up, writing complex <strong>DAX frameworks</strong>, integrating <strong>Snowflake</strong> data pipelines, and resolving the kinds of composite model conflicts that make people want to throw their laptop out a window.</p>
+                <p class="body-text">I've also built capability presentations around <strong>Azure Document Intelligence</strong> and OCR — including a real-world signature detection case study combining Azure, GPT vision, and PyTorch. If there's a way to make data smarter, I'm probably already poking at it.</p>
             </div>
-            <div class="wid-sidebar wa">
-                <div class="wid-sidebar-title">Toolkit</div>
-                <div class="wid-sidebar-item"><span class="skill">Power BI</span><span class="level">Primary</span></div>
-                <div class="wid-sidebar-item"><span class="skill">DAX</span><span class="level">Advanced</span></div>
-                <div class="wid-sidebar-item"><span class="skill">Snowflake</span><span class="level">Production</span></div>
-                <div class="wid-sidebar-item"><span class="skill">Azure AI / OCR</span><span class="level">Capability Lead</span></div>
-                <div class="wid-sidebar-item"><span class="skill">Python</span><span class="level">Tooling</span></div>
-                <div class="wid-sidebar-item"><span class="skill">Tabular Editor</span><span class="level">Modeling</span></div>
-                <div class="wid-sidebar-item"><span class="skill">DAX Studio</span><span class="level">Performance</span></div>
+            <div class="toolkit">
+                <div class="tk-row"><span class="tk-name">Power BI</span><span class="tk-level">Primary</span></div>
+                <div class="tk-row"><span class="tk-name">DAX</span><span class="tk-level">Advanced</span></div>
+                <div class="tk-row"><span class="tk-name">Snowflake</span><span class="tk-level">Production</span></div>
+                <div class="tk-row"><span class="tk-name">Azure AI / OCR</span><span class="tk-level">Capability Lead</span></div>
+                <div class="tk-row"><span class="tk-name">Python</span><span class="tk-level">Tooling</span></div>
+                <div class="tk-row"><span class="tk-name">Tabular Editor</span><span class="tk-level">Modeling</span></div>
+                <div class="tk-row"><span class="tk-name">DAX Studio</span><span class="tk-level">Performance</span></div>
             </div>
         </div>
     </div>
 </section>
 
-<section class="sec-border scene-fw" id="fw">
-    <div class="sec-pad">
-        <p class="eyebrow wa">From Passion to Action</p>
-        <h2 class="sec-title wa">Final Weapon — My Vision<br>for Modern Games Media.</h2>
-        <div class="fw-grid">
-            <div class="fw-text wa">
-                <p>I founded <strong>Final Weapon</strong> at 16 years old because Japanese gaming coverage in English was scattered, shallow, and riddled with clickbait. I wanted to build a home for nonsense-free news, reviews, and insights about the video game medium and niche entertainment.</p>
-                <p>Since launch in 2019, we've grown into a <strong>Metacritic-listed publication</strong> with a massive worldwide audience. As Editor-in-Chief, I lead a talented team of writers, content creators, and designers — overseeing all content production, editorial strategy, and day-to-day operations. I balance creative direction with technical responsibilities, making sure both the platform and its content keep evolving.</p>
-                <p>Through Final Weapon, I've built countless connections across the industry and gained deep experience in <strong>project management, marketing, and industry relations</strong>. I work closely with major publishers and developers, and represent Final Weapon at leading events worldwide — including <strong>Summer Game Fest</strong>, <strong>The Game Awards</strong>, and more.</p>
+<!-- ═══ FINAL WEAPON ═══ -->
+<section class="scene" id="fw" style="overflow:hidden; position:relative;">
+    <div class="fw-bg-text">FW</div>
+    <div class="content-wrap">
+        <p class="scene-eyebrow">From Passion to Action</p>
+        <h2 class="scene-heading split-heading">Final Weapon — My Vision for Modern Games Media.</h2>
+        <div class="fw-layout">
+            <div>
+                <p class="body-text">I founded <strong>Final Weapon</strong> at 16 years old because Japanese gaming coverage in English was scattered, shallow, and riddled with clickbait. I wanted to build a home for nonsense-free news, reviews, and insights about the video game medium and niche entertainment.</p>
+                <p class="body-text">Since launch in 2019, we've grown into a <strong>Metacritic-listed publication</strong> with a massive worldwide audience. As Editor-in-Chief, I lead a talented team of writers, content creators, and designers — overseeing all content production, editorial strategy, and day-to-day operations.</p>
+                <p class="body-text">Through Final Weapon, I've built countless connections across the industry and gained deep experience in <strong>project management, marketing, and industry relations</strong>. I work closely with major publishers and developers, and represent Final Weapon at leading events worldwide — including <strong>Summer Game Fest</strong>, <strong>The Game Awards</strong>, and more.</p>
                 <a href="https://finalweapon.net" target="_blank" rel="noopener" class="fw-cta">Read Final Weapon →</a>
             </div>
-            <div class="fw-stats wa">
-                <div class="fw-cell"><div class="val">7</div><div class="lbl">Years Running</div></div>
-                <div class="fw-cell"><div class="val">60+</div><div class="lbl">Writers All-Time</div></div>
-                <div class="fw-cell"><div class="val">10M+</div><div class="lbl">Lifetime Views</div></div>
-                <div class="fw-cell"><div class="val">3K+</div><div class="lbl">Articles Published*</div></div>
-                <div class="fw-partners-cell">
-                    <div style="width:100%; text-align:center; margin-bottom:0.5rem; font-size:0.5rem; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:var(--mid);">Partners We Work With</div>
-                    <span class="fw-chip">Nintendo</span>
-                    <span class="fw-chip">PlayStation</span>
-                    <span class="fw-chip">Square Enix</span>
-                    <span class="fw-chip">Capcom</span>
-                    <span class="fw-chip">SEGA</span>
-                    <span class="fw-chip">Atlus</span>
-                    <span class="fw-chip">Bandai Namco</span>
-                    <span class="fw-chip">Koei Tecmo</span>
-                    <span class="fw-chip">Xbox</span>
-                    <span class="fw-chip">EA</span>
-                    <span class="fw-chip">Arc System Works</span>
-                    <span class="fw-chip">NIS America</span>
-                    <span class="fw-chip">XSEED</span>
+            <div>
+                <div class="fw-stats-grid">
+                    <div class="fw-stat"><div class="num" data-count="7">0</div><div class="lbl">Years Running</div></div>
+                    <div class="fw-stat"><div class="num" data-count="60">0</div><div class="lbl">Writers All-Time</div></div>
+                    <div class="fw-stat"><div class="num" data-count="10" data-suffix="M+">0</div><div class="lbl">Lifetime Views</div></div>
+                    <div class="fw-stat"><div class="num" data-count="35" data-suffix="K+">0</div><div class="lbl">Articles Published</div></div>
+                    <div class="fw-partners">
+                        <span class="fw-partners-label">Partners We Work With</span>
+                        <div class="fw-partners-list">
+                            <span class="fw-chip">Nintendo</span>
+                            <span class="fw-chip">PlayStation</span>
+                            <span class="fw-chip">Square Enix</span>
+                            <span class="fw-chip">Capcom</span>
+                            <span class="fw-chip">SEGA</span>
+                            <span class="fw-chip">Atlus</span>
+                            <span class="fw-chip">Bandai Namco</span>
+                            <span class="fw-chip">Koei Tecmo</span>
+                            <span class="fw-chip">Xbox</span>
+                            <span class="fw-chip">EA</span>
+                            <span class="fw-chip">Arc System Works</span>
+                            <span class="fw-chip">NIS America</span>
+                            <span class="fw-chip">XSEED</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <p style="font-size: 0.55rem; color: var(--mid); margin-top: 1rem; opacity: 0.6;">*Across Final Weapon, IGN, and all other outlets combined.</p>
-        <div style="margin-top: 4rem; padding-top: 3rem; border-top: 1px solid var(--faint);">
-            <p class="eyebrow wa">Also Published At</p>
-            <p class="pub-note wa">Outside of Final Weapon, I'm a <strong>regular contributor at IGN</strong>, where I've worked with the Tech, Commerce, IGN Store, IGN Rewards, and Evergreen teams. I run the Daily Deals column and have assisted the Database Management team on IGN Playlist.</p>
-            <div class="pub-row wa">
-                <span class="pub-pill highlight">IGN — Regular Contributor</span>
+
+        <div class="pub-section">
+            <p class="scene-eyebrow">Also Published At</p>
+            <p class="body-text">Outside of Final Weapon, I'm a <strong>regular contributor at IGN</strong>, where I've worked with the Tech, Commerce, IGN Store, IGN Rewards, and Evergreen teams. I run the Daily Deals column and have assisted the Database Management team on IGN Playlist.</p>
+            <div class="pub-pills">
+                <span class="pub-pill hl">IGN — Regular Contributor</span>
                 <span class="pub-pill">Hard Drive</span>
                 <span class="pub-pill">TheGamer</span>
                 <span class="pub-pill">Attack of the Fanboy</span>
@@ -260,55 +490,60 @@
     </div>
 </section>
 
-<section class="sec-border" id="life">
-    <div class="sec-pad">
-        <p class="eyebrow wa">Off the Clock</p>
-        <h2 class="sec-title wa">There's more to life<br>than dashboards.</h2>
-        <div class="otc-grid">
-            <div class="otc-item tall wa">
-                <img src="img/kojima.jpg" alt="Meeting Hideo Kojima" loading="lazy">
-                <div class="otc-caption">
-                    <div class="otc-caption-title">Meeting Hideo Kojima</div>
-                    <div class="otc-caption-sub">Summer Game Fest, 2025</div>
+<!-- ═══ OFF THE CLOCK ═══ -->
+<section class="scene" id="life">
+    <div class="content-wrap">
+        <p class="scene-eyebrow">Off the Clock</p>
+        <h2 class="scene-heading split-heading">There's more to life than dashboards.</h2>
+    </div>
+    <div class="gallery-outer" id="gallery">
+        <div class="gallery-track" id="galleryTrack">
+            <div class="gallery-item">
+                <img src="img/kojima.jpg" alt="Meeting Hideo Kojima" draggable="false">
+                <div class="gallery-caption">
+                    <div class="gallery-cap-title">Meeting Hideo Kojima</div>
+                    <div class="gallery-cap-sub">Summer Game Fest, 2025</div>
                 </div>
             </div>
-            <div class="otc-item wa">
-                <img src="img/ou-game.jpg" alt="Red River Rivalry" loading="lazy">
-                <div class="otc-caption">
-                    <div class="otc-caption-title">Red River Rivalry</div>
-                    <div class="otc-caption-sub">OU vs. Texas · Cotton Bowl</div>
+            <div class="gallery-item">
+                <img src="img/ou-game.jpg" alt="Red River Rivalry" draggable="false">
+                <div class="gallery-caption">
+                    <div class="gallery-cap-title">Red River Rivalry</div>
+                    <div class="gallery-cap-sub">OU vs. Texas · Cotton Bowl</div>
                 </div>
             </div>
-            <div class="otc-item wa">
-                <img src="img/dq-event.jpg" alt="Dragon Quest III event" loading="lazy">
-                <div class="otc-caption">
-                    <div class="otc-caption-title">Dragon Quest III Preview</div>
-                    <div class="otc-caption-sub">Press Event · Square Enix</div>
+            <div class="gallery-item">
+                <img src="img/dq-event.jpg" alt="Dragon Quest III event" draggable="false">
+                <div class="gallery-caption">
+                    <div class="gallery-cap-title">Dragon Quest III Preview</div>
+                    <div class="gallery-cap-sub">Press Event · Square Enix</div>
                 </div>
             </div>
-            <div class="otc-item wa">
-                <img src="img/japan-forge.jpg" alt="Knife forging in Japan" loading="lazy">
-                <div class="otc-caption">
-                    <div class="otc-caption-title">Knife Forging in Japan</div>
-                    <div class="otc-caption-sub">Traditional Blacksmith Workshop</div>
+            <div class="gallery-item">
+                <img src="img/japan-forge.jpg" alt="Knife forging in Japan" draggable="false">
+                <div class="gallery-caption">
+                    <div class="gallery-cap-title">Knife Forging in Japan</div>
+                    <div class="gallery-cap-sub">Traditional Blacksmith Workshop</div>
                 </div>
             </div>
-            <div class="otc-item wa">
-                <img src="img/ou-family.jpg" alt="Bye Bye, Bama" loading="lazy">
-                <div class="otc-caption">
-                    <div class="otc-caption-title">Sooner Born, Sooner Bred</div>
-                    <div class="otc-caption-sub">Owen Field · Norman, OK</div>
+            <div class="gallery-item">
+                <img src="img/ou-family.jpg" alt="Bye Bye, Bama" draggable="false">
+                <div class="gallery-caption">
+                    <div class="gallery-cap-title">Sooner Born, Sooner Bred</div>
+                    <div class="gallery-cap-sub">Owen Field · Norman, OK</div>
                 </div>
             </div>
         </div>
     </div>
+    <p class="gallery-hint">Drag to explore →</p>
 </section>
 
-<section class="sec-border scene-contact" id="contact">
+<!-- ═══ CONTACT ═══ -->
+<section class="scene scene-contact" id="contact">
     <div class="contact-inner">
-        <h2 class="contact-heading wa">Let's talk.</h2>
-        <p class="contact-sub wa">Analytics, editorial, or something else entirely — I'm always open to meeting curious people.</p>
-        <div class="contact-pills wa">
+        <h2 class="contact-heading split-heading">Let's talk.</h2>
+        <p class="contact-sub">Analytics, editorial, or something else entirely — I'm always open to meeting curious people.</p>
+        <div class="contact-pills">
             <a href="mailto:noahbhunter1883@gmail.com" class="pill solid">Email Me</a>
             <a href="https://www.linkedin.com/in/noahbhunter/" target="_blank" rel="noopener" class="pill">LinkedIn ↗</a>
             <a href="https://finalweapon.net" target="_blank" rel="noopener" class="pill">Final Weapon ↗</a>
@@ -318,107 +553,836 @@
 
 <footer class="foot">
     <span>© 2026 Noah Hunter</span>
-    <span class="foot-credit" id="footCredit" title="Try the Konami Code.">Dallas, Texas</span>
+    <span id="footCredit" title="↑↑↓↓←→←→BA" style="cursor:default;">Dallas, Texas</span>
 </footer>
 
-<!-- Easter Egg Overlay -->
-<div id="gilgamesh" style="position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;background:rgba(5,5,5,0.95);flex-direction:column;gap:1rem;cursor:pointer;">
-    <p style="font-family:var(--mono);font-size:clamp(1rem,3vw,1.5rem);text-align:center;color:var(--fg);letter-spacing:0.05em;line-height:1.8;">
-        I am the bone of my sword.<br>
-        Code is my body and data is my blood.<br>
-        I have created over a thousand websites.<br>
-        Unknown to downtime, nor known to bugs.<br>
-        Yet these hands will never hold anything.<br>
-        So as I pray —<br><br>
-        <span style="font-weight:800;font-size:clamp(1.5rem,4vw,2.5rem);letter-spacing:0.15em;">UNLIMITED GILGAMESH WORKS.</span>
-    </p>
-    <p style="font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mid);margin-top:1rem;">Built by Gilgamesh, humble junior analyst · Click anywhere to close</p>
+<!-- CRT Game Shelf Easter Egg -->
+<div id="crtShelf" style="position:fixed;inset:0;z-index:99999;display:none;background:#0a0f0a;overflow:hidden;">
+    <!-- CRT Scanlines -->
+    <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.15) 2px,rgba(0,0,0,0.15) 4px);pointer-events:none;z-index:3;"></div>
+    <!-- CRT vignette -->
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,0.6) 100%);pointer-events:none;z-index:3;"></div>
+    <!-- CRT flicker -->
+    <style>
+        @keyframes crtFlicker { 0%,100%{opacity:0.97} 50%{opacity:1} }
+        #crtShelf { animation: crtFlicker 0.1s infinite; }
+        .shelf-title { font-family: 'Space Mono', monospace; font-size: clamp(1rem,3vw,1.5rem); font-weight: 700; color: #33ff66; text-transform: uppercase; letter-spacing: 0.2em; text-align: center; padding-top: clamp(2rem,5vh,4rem); text-shadow: 0 0 10px rgba(51,255,102,0.5), 0 0 30px rgba(51,255,102,0.2); position: relative; z-index: 2; }
+        .shelf-sub { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: rgba(51,255,102,0.4); text-align: center; letter-spacing: 0.3em; text-transform: uppercase; margin-top: 0.5rem; position: relative; z-index: 2; }
+        .shelf-close { font-family: 'Space Mono', monospace; font-size: 0.5rem; color: rgba(51,255,102,0.3); text-align: center; letter-spacing: 0.2em; text-transform: uppercase; margin-top: 0.5rem; position: relative; z-index: 2; }
+        .shelf-container { display: flex; gap: clamp(1rem,2vw,1.5rem); padding: clamp(2rem,4vh,3rem) clamp(1.5rem,5vw,4rem); overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -ms-overflow-style: none; position: relative; z-index: 2; height: calc(100vh - 10rem); align-items: center; cursor: grab; }
+        .shelf-container::-webkit-scrollbar { display: none; }
+        .shelf-container:active { cursor: grabbing; }
+        .game-case { flex-shrink: 0; width: clamp(200px,22vw,280px); height: clamp(280px,40vh,400px); border: 1px solid rgba(51,255,102,0.15); background: rgba(51,255,102,0.03); border-radius: 4px; display: flex; flex-direction: column; justify-content: flex-end; padding: 1.5rem; position: relative; overflow: hidden; transition: all 0.4s cubic-bezier(0.16,1,0.3,1); cursor: default; }
+        .game-case:hover { border-color: rgba(51,255,102,0.5); background: rgba(51,255,102,0.06); transform: translateY(-8px); box-shadow: 0 0 30px rgba(51,255,102,0.08); }
+        .game-case::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%; background: linear-gradient(180deg, rgba(51,255,102,0.04), transparent); pointer-events: none; }
+        .game-rank { position: absolute; top: 1rem; left: 1.25rem; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: clamp(3rem,5vw,4.5rem); color: rgba(51,255,102,0.06); line-height: 1; }
+        .game-case:hover .game-rank { color: rgba(51,255,102,0.12); }
+        .game-platform { font-family: 'Space Mono', monospace; font-size: 0.45rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(51,255,102,0.35); margin-bottom: 0.75rem; }
+        .game-title { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: clamp(0.9rem,1.5vw,1.15rem); color: #33ff66; line-height: 1.3; text-shadow: 0 0 8px rgba(51,255,102,0.3); }
+        .game-comment { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: rgba(51,255,102,0.45); line-height: 1.6; margin-top: 0.75rem; max-height: 0; overflow: hidden; transition: max-height 0.4s; }
+        .game-case:hover .game-comment { max-height: 100px; }
+        .game-tag { display: inline-block; font-family: 'Space Mono', monospace; font-size: 0.45rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.2rem 0.5rem; border: 1px solid rgba(51,255,102,0.15); color: rgba(51,255,102,0.4); margin-top: 0.5rem; }
+    </style>
+    <div class="shelf-title">Noah's Collection</div>
+    <div class="shelf-sub">Top Games · All Time · Ranked</div>
+    <div class="shelf-close">Drag to browse · Press ESC or click to close</div>
+    <div class="shelf-container" id="shelfContainer">
+        <div class="game-case">
+            <div class="game-rank">01</div>
+            <div class="game-platform">PS1 / PS4 / PC</div>
+            <div class="game-title">Final Fantasy VII</div>
+            <div class="game-comment">The one that started it all. Nothing else compares.</div>
+            <span class="game-tag">JRPG</span>
+        </div>
+        <div class="game-case">
+            <div class="game-rank">02</div>
+            <div class="game-platform">Nintendo Switch</div>
+            <div class="game-title">Xenoblade Chronicles 2</div>
+            <div class="game-comment">The best world-building in gaming. Rex and Pyra forever.</div>
+            <span class="game-tag">JRPG</span>
+        </div>
+        <div class="game-case">
+            <div class="game-rank">03</div>
+            <div class="game-platform">PS2 / PS4</div>
+            <div class="game-title">Kingdom Hearts II</div>
+            <div class="game-comment">Peak action-RPG combat. Roxas intro hits different every time.</div>
+            <span class="game-tag">Action RPG</span>
+        </div>
+        <div class="game-case">
+            <div class="game-rank">04</div>
+            <div class="game-platform">PS5 / PC</div>
+            <div class="game-title">Death Stranding 2: On The Beach</div>
+            <div class="game-comment">Kojima outdid himself. This is art.</div>
+            <span class="game-tag">Action</span>
+        </div>
+        <div class="game-case">
+            <div class="game-rank">05</div>
+            <div class="game-platform">Multi-Platform</div>
+            <div class="game-title">Resident Evil 4</div>
+            <div class="game-comment">The remake AND the original. Both masterpieces.</div>
+            <span class="game-tag">Survival Horror</span>
+        </div>
+        <div class="game-case">
+            <div class="game-rank">06</div>
+            <div class="game-platform">PS1</div>
+            <div class="game-title">Xenogears</div>
+            <div class="game-comment">The most ambitious story ever attempted in a video game.</div>
+            <span class="game-tag">JRPG</span>
+        </div>
+        <div class="game-case">
+            <div class="game-rank">07</div>
+            <div class="game-platform">PS4 / PC</div>
+            <div class="game-title">NieR Replicant ver.1.22...</div>
+            <div class="game-comment">Yoko Taro is a genius. This game broke me.</div>
+            <span class="game-tag">Action RPG</span>
+        </div>
+        <div class="game-case">
+            <div class="game-rank">08</div>
+            <div class="game-platform">PC / Visual Novel</div>
+            <div class="game-title">Fate/stay night</div>
+            <div class="game-comment">The bone of my sword. Unlimited Blade Works route, obviously.</div>
+            <span class="game-tag">Visual Novel</span>
+        </div>
+        <div class="game-case">
+            <div class="game-rank">09</div>
+            <div class="game-platform">PS4 / PC</div>
+            <div class="game-title">Death Stranding</div>
+            <div class="game-comment">The first one earned its place here too. Keep on keeping on.</div>
+            <span class="game-tag">Action</span>
+        </div>
+    </div>
+</div>
+
+<!-- Gate of Babylon Game -->
+<div id="gobGame" style="position:fixed;inset:0;z-index:99998;display:none;background:#050505;flex-direction:column;align-items:center;justify-content:center;">
+    <canvas id="gobCanvas"></canvas>
+    <div id="gobUI" style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;">
+        <div id="gobStart" style="text-align:center;pointer-events:auto;">
+            <p style="font-weight:800;font-size:clamp(2rem,5vw,3.5rem);letter-spacing:0.1em;color:#ededed;margin-bottom:0.5rem;">GATE OF BABYLON</p>
+            <p style="font-family:'Space Mono',monospace;font-size:0.7rem;color:#666;margin-bottom:2rem;line-height:1.8;">Dodge the swords of the King of Heroes.<br>Arrow keys / WASD / Touch to move.</p>
+            <button id="gobStartBtn" style="font-family:'Outfit',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;padding:0.9rem 2.5rem;border:1px solid #ededed;background:transparent;color:#ededed;cursor:pointer;transition:all 0.3s;">BEGIN</button>
+            <p style="font-size:0.45rem;letter-spacing:0.2em;text-transform:uppercase;color:#444;margin-top:1.5rem;">Press ESC to exit</p>
+        </div>
+        <div id="gobOver" style="text-align:center;display:none;pointer-events:auto;">
+            <p style="font-weight:800;font-size:clamp(1.5rem,4vw,2.5rem);letter-spacing:0.1em;color:#ededed;margin-bottom:0.25rem;">GAME OVER</p>
+            <p id="gobFinalScore" style="font-family:'Space Mono',monospace;font-size:clamp(2rem,5vw,3.5rem);font-weight:700;color:#ededed;margin-bottom:0.25rem;">0</p>
+            <p id="gobFinalLevel" style="font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:#666;margin-bottom:2rem;">Level 1</p>
+            <button id="gobRetryBtn" style="font-family:'Outfit',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;padding:0.9rem 2.5rem;border:1px solid #ededed;background:transparent;color:#ededed;cursor:pointer;transition:all 0.3s;margin-right:0.5rem;">RETRY</button>
+            <button id="gobExitBtn" style="font-family:'Outfit',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;padding:0.9rem 2.5rem;border:1px solid #444;background:transparent;color:#666;cursor:pointer;transition:all 0.3s;">EXIT</button>
+        </div>
+    </div>
+    <div id="gobHUD" style="position:absolute;top:1.25rem;left:1.25rem;right:1.25rem;display:none;justify-content:space-between;align-items:flex-start;">
+        <div>
+            <div id="gobScore" style="font-weight:800;font-size:1.5rem;color:#ededed;font-variant-numeric:tabular-nums;">0</div>
+            <div id="gobLevel" style="font-size:0.5rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:#666;">Level 1</div>
+        </div>
+        <div style="text-align:right;">
+            <div id="gobLives" style="font-size:1rem;letter-spacing:0.25rem;">♦♦♦</div>
+            <div id="gobPowerup" style="font-size:0.5rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:#666;margin-top:0.25rem;"></div>
+        </div>
+    </div>
+    <div id="gobLevelAnnounce" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;display:none;pointer-events:none;">
+        <p style="font-weight:800;font-size:clamp(2rem,6vw,4rem);letter-spacing:0.15em;color:#ededed;" id="gobLevelText">LEVEL 1</p>
+        <p style="font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:#666;margin-top:0.5rem;" id="gobLevelSub">The gates open...</p>
+    </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
 <script>
-    gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
-    const fill = document.getElementById('loaderFill');
-    let prog = 0;
-    const li = setInterval(() => {
-        prog += Math.random() * 30;
-        if (prog >= 100) { prog = 100; clearInterval(li);
-            setTimeout(() => { gsap.to('#loader', { opacity: 0, duration: 0.5, onComplete: () => { document.getElementById('loader').style.display = 'none'; runIntro(); }}); }, 250);
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+/* ═══ LOADER (counts up like plan-az) ═══ */
+const loaderCount = document.getElementById('loaderCount');
+const loaderFill = document.getElementById('loaderFill');
+let prog = 0;
+const loadTick = setInterval(() => {
+    prog += Math.floor(Math.random() * 15) + 5;
+    if (prog >= 100) { prog = 100; clearInterval(loadTick);
+        setTimeout(() => {
+            gsap.to('#loader', { opacity: 0, duration: 0.6, ease: 'power2.inOut',
+                onComplete: () => { document.getElementById('loader').style.display = 'none'; heroReveal(); }
+            });
+        }, 400);
+    }
+    loaderCount.textContent = prog;
+    loaderFill.style.width = prog + '%';
+}, 120);
+
+/* ═══ HERO REVEAL ═══ */
+function heroReveal() {
+    const tl = gsap.timeline();
+    tl.to('.hero-name .ln span', { y: 0, duration: 1.2, stagger: 0.15, ease: 'power4.out' })
+      .to('.hero-greeting', { opacity: 1, duration: 0.8, ease: 'power2.out' }, '-=0.7')
+      .to('.hero-typing', { opacity: 1, duration: 0.7 }, '-=0.4')
+      .to('.hero-scroll', { opacity: 1, duration: 0.5 }, '-=0.2');
+    startTyping();
+}
+
+/* ═══ TYPING ═══ */
+const roles = ['a Data Scientist.', 'an Editor-in-Chief.', 'a Journalist.', 'a Problem Solver.', 'a Power BI Developer.', 'the Bone of My Sword.', 'a Data Engineer.', 'a Storyteller.', 'a Sooner.'];
+let rIdx = 0;
+const tEl = document.getElementById('typingRole');
+function startTyping() { typeR(roles[0]); }
+function typeR(text) {
+    let i = 0; tEl.textContent = '';
+    const t = setInterval(() => { tEl.textContent += text[i]; i++; if (i >= text.length) { clearInterval(t); setTimeout(() => delR(text), 2200); } }, 65);
+}
+function delR(text) {
+    let i = text.length;
+    const t = setInterval(() => { i--; tEl.textContent = text.substring(0, i); if (i <= 0) { clearInterval(t); rIdx = (rIdx + 1) % roles.length; setTimeout(() => typeR(roles[rIdx]), 350); } }, 30);
+}
+
+/* ═══ SCROLL PROGRESS BAR ═══ */
+window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    const p = (window.scrollY / h) * 100;
+    document.getElementById('scrollProgress').style.width = p + '%';
+});
+
+/* ═══ HERO PARALLAX ═══ */
+gsap.to('.hero-name', {
+    scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
+    y: 150, opacity: 0, ease: 'none'
+});
+
+/* ═══ SPLIT HEADING ANIMATIONS (word by word reveal) ═══ */
+document.querySelectorAll('.split-heading').forEach(heading => {
+    const text = heading.textContent;
+    heading.innerHTML = '';
+    text.split(/\s+/).forEach(word => {
+        if (word.trim()) {
+            const outer = document.createElement('span');
+            outer.className = 'word';
+            const inner = document.createElement('span');
+            inner.textContent = word;
+            outer.appendChild(inner);
+            heading.appendChild(outer);
         }
-        fill.style.width = prog + '%';
-    }, 180);
-
-    function runIntro() {
-        const tl = gsap.timeline();
-        tl.to('.intro-name .ln span', { y: 0, duration: 1.1, stagger: 0.12, ease: 'power4.out' })
-          .to('.intro-greeting', { opacity: 1, duration: 0.7, ease: 'power2.out' }, '-=0.6')
-          .to('.intro-typing-wrap', { opacity: 1, duration: 0.6 }, '-=0.3')
-          .to('.intro-scroll', { opacity: 1, duration: 0.5 }, '-=0.2');
-        startTyping();
-    }
-
-    const roles = ['a Data Scientist.', 'an Editor-in-Chief.', 'a Journalist.', 'a Problem Solver.', 'a Power BI Developer.', 'the Bone of My Sword.', 'a Data Engineer.', 'a Storyteller.', 'a Sooner.'];
-    let roleIdx = 0;
-    const typeEl = document.getElementById('typingRole');
-    function startTyping() { typeRole(roles[0]); }
-    function typeRole(text) {
-        let i = 0; typeEl.textContent = '';
-        const t = setInterval(() => { typeEl.textContent += text[i]; i++; if (i >= text.length) { clearInterval(t); setTimeout(() => deleteRole(text), 2000); } }, 70);
-    }
-    function deleteRole(text) {
-        let i = text.length;
-        const t = setInterval(() => { i--; typeEl.textContent = text.substring(0, i); if (i <= 0) { clearInterval(t); roleIdx = (roleIdx + 1) % roles.length; setTimeout(() => typeRole(roles[roleIdx]), 400); } }, 35);
-    }
-
-    gsap.utils.toArray('.wa').forEach(el => {
-        gsap.from(el, { scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }, y: 35, opacity: 0, duration: 0.9, ease: 'power3.out' });
     });
 
-    gsap.to('.intro-name', {
-        scrollTrigger: { trigger: '.scene-intro', start: 'top top', end: 'bottom top', scrub: true },
-        y: 120, opacity: 0, ease: 'none'
+    gsap.to(heading.querySelectorAll('.word span'), {
+        scrollTrigger: { trigger: heading, start: 'top 85%', toggleActions: 'play none none none' },
+        y: 0, duration: 0.8, stagger: 0.04, ease: 'power4.out'
     });
+});
 
-    const menuBtn = document.getElementById('menuBtn');
-    const navLinks = document.getElementById('navLinks');
-    menuBtn.addEventListener('click', () => navLinks.classList.toggle('open'));
-    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
-
-    // ─── SMOOTH SCROLL ───
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-        a.addEventListener('click', function(e) { e.preventDefault(); const t = document.querySelector(this.getAttribute('href')); if (t) gsap.to(window, { scrollTo: { y: t }, duration: 1, ease: 'power3.inOut' }); });
+/* ═══ BODY TEXT + ELEMENTS REVEAL ═══ */
+gsap.utils.toArray('.body-text, .scene-eyebrow, .toolkit, .fw-stats-grid, .pub-section, .fw-cta, .pub-pills, .contact-sub, .contact-pills, .gallery-hint').forEach(el => {
+    gsap.from(el, {
+        scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none none' },
+        y: 30, opacity: 0, duration: 0.8, ease: 'power3.out'
     });
+});
 
-    // ─── EASTER EGG: KONAMI CODE ───
-    const konamiCode = [38,38,40,40,37,39,37,39,66,65];
-    let konamiIdx = 0;
-    const gilgaDiv = document.getElementById('gilgamesh');
+/* ═══ COUNTER ANIMATION ON FW STATS ═══ */
+document.querySelectorAll('.fw-stat .num[data-count]').forEach(el => {
+    const target = parseInt(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    const hasSuffix = suffix.length > 0;
 
-    document.addEventListener('keydown', (e) => {
-        if (e.keyCode === konamiCode[konamiIdx]) {
-            konamiIdx++;
-            if (konamiIdx === konamiCode.length) {
-                gilgaDiv.style.display = 'flex';
-                konamiIdx = 0;
+    ScrollTrigger.create({
+        trigger: el,
+        start: 'top 85%',
+        once: true,
+        onEnter: () => {
+            gsap.to({ val: 0 }, {
+                val: target,
+                duration: 1.5,
+                ease: 'power2.out',
+                onUpdate: function() {
+                    const v = Math.round(this.targets()[0].val);
+                    el.textContent = v + (hasSuffix && v >= target ? suffix : (v >= target ? '+' : ''));
+                },
+                onComplete: () => { el.textContent = target + (hasSuffix ? suffix : '+'); }
+            });
+        }
+    });
+});
+
+/* ═══ DRAGGABLE PHOTO GALLERY ═══ */
+const gallery = document.getElementById('gallery');
+const track = document.getElementById('galleryTrack');
+let isDragging = false, startX, scrollLeft;
+
+gallery.addEventListener('mousedown', e => {
+    isDragging = true; startX = e.pageX - gallery.offsetLeft;
+    scrollLeft = gallery.scrollLeft;
+});
+gallery.addEventListener('mousemove', e => {
+    if (!isDragging) return; e.preventDefault();
+    const x = e.pageX - gallery.offsetLeft;
+    gallery.scrollLeft = scrollLeft - (x - startX) * 1.5;
+});
+gallery.addEventListener('mouseup', () => isDragging = false);
+gallery.addEventListener('mouseleave', () => isDragging = false);
+
+// Touch support
+gallery.addEventListener('touchstart', e => { startX = e.touches[0].pageX; scrollLeft = gallery.scrollLeft; });
+gallery.addEventListener('touchmove', e => {
+    const x = e.touches[0].pageX;
+    gallery.scrollLeft = scrollLeft - (x - startX);
+});
+
+// Make gallery scrollable
+gallery.style.overflowX = 'auto';
+gallery.style.scrollbarWidth = 'none';
+gallery.style.msOverflowStyle = 'none';
+
+/* ═══ PARALLAX ON FW BACKGROUND TEXT ═══ */
+gsap.to('.fw-bg-text', {
+    scrollTrigger: { trigger: '#fw', start: 'top bottom', end: 'bottom top', scrub: true },
+    y: -120, ease: 'none'
+});
+
+/* ═══ NAV ═══ */
+const menuBtn = document.getElementById('menuBtn');
+const navLinks = document.getElementById('navLinks');
+menuBtn.addEventListener('click', () => navLinks.classList.toggle('open'));
+navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+/* ═══ SMOOTH SCROLL ═══ */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', function(e) {
+        e.preventDefault();
+        const t = document.querySelector(this.getAttribute('href'));
+        if (t) gsap.to(window, { scrollTo: { y: t }, duration: 1, ease: 'power3.inOut' });
+    });
+});
+
+/* ═══ KONAMI CODE → CRT GAME SHELF ═══ */
+const kc = [38,38,40,40,37,39,37,39,66,65];
+let ki = 0;
+const shelfEl = document.getElementById('crtShelf');
+const shelfContainer = document.getElementById('shelfContainer');
+const gobEl = document.getElementById('gobGame');
+
+document.addEventListener('keydown', e => {
+    if (gobEl.style.display === 'flex') return; // don't interfere with game
+    if (e.keyCode === kc[ki]) { ki++; if (ki === kc.length) { openShelf(); ki = 0; } } else { ki = 0; }
+    if (e.key === 'Escape' && shelfEl.style.display === 'block') closeShelf();
+});
+
+function openShelf() {
+    shelfEl.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeShelf() {
+    shelfEl.style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+// Click anywhere on shelf background to close (but not on game cases)
+shelfEl.addEventListener('click', e => {
+    if (e.target === shelfEl || e.target.classList.contains('shelf-title') ||
+        e.target.classList.contains('shelf-sub') || e.target.classList.contains('shelf-close')) {
+        closeShelf();
+    }
+});
+
+// Shelf drag scrolling
+let shelfDragging = false, shelfStartX, shelfScrollLeft;
+shelfContainer.addEventListener('mousedown', e => {
+    shelfDragging = true;
+    shelfStartX = e.pageX - shelfContainer.offsetLeft;
+    shelfScrollLeft = shelfContainer.scrollLeft;
+});
+shelfContainer.addEventListener('mousemove', e => {
+    if (!shelfDragging) return;
+    e.preventDefault();
+    const x = e.pageX - shelfContainer.offsetLeft;
+    shelfContainer.scrollLeft = shelfScrollLeft - (x - shelfStartX) * 1.5;
+});
+shelfContainer.addEventListener('mouseup', () => shelfDragging = false);
+shelfContainer.addEventListener('mouseleave', () => shelfDragging = false);
+
+let fc = 0;
+document.getElementById('footCredit').addEventListener('click', () => {
+    fc++; if (fc >= 7) { launchGOB(); fc = 0; }
+});
+
+/* ═══════════════════════════════════════════════════════
+   GATE OF BABYLON — SHMUP GAME
+   ═══════════════════════════════════════════════════════ */
+const canvas = document.getElementById('gobCanvas');
+const ctx = canvas.getContext('2d');
+const gobStartEl = document.getElementById('gobStart');
+const gobOverEl = document.getElementById('gobOver');
+const gobHUD = document.getElementById('gobHUD');
+const gobLevelAnnounce = document.getElementById('gobLevelAnnounce');
+
+let gameRunning = false, gameLoop = null;
+
+// Game state
+let G = {};
+
+function resetGame() {
+    G = {
+        player: { x: 0, y: 0, w: 18, h: 18, speed: 5, trail: [] },
+        swords: [],
+        powerups: [],
+        particles: [],
+        score: 0,
+        level: 1,
+        lives: 3,
+        frame: 0,
+        spawnRate: 45,
+        swordSpeed: 2.5,
+        hasShield: false,
+        shieldTimer: 0,
+        slowActive: false,
+        slowTimer: 0,
+        boostActive: false,
+        boostTimer: 0,
+        eaFlash: 0,
+        levelTimer: 0,
+        levelDuration: 900, // 15 seconds at 60fps
+        keys: {},
+        touch: { active: false, x: 0 },
+        invincible: 0,
+        nearMissScore: 0
+    };
+}
+
+const LEVEL_NAMES = [
+    'The gates open...',
+    'Swords multiply...',
+    'Gilgamesh grows impatient...',
+    'The treasury overflows...',
+    'Ea stirs...',
+    'Unlimited Blade Works!',
+    'You dare challenge a king?',
+    'MONGREL!',
+    'Beyond mortal limits.',
+    'Endure, or perish.'
+];
+
+function launchGOB() {
+    gobEl.style.display = 'flex';
+    gobStartEl.style.display = 'block';
+    gobOverEl.style.display = 'none';
+    gobHUD.style.display = 'none';
+    gobLevelAnnounce.style.display = 'none';
+    resizeCanvas();
+    document.body.style.overflow = 'hidden';
+}
+
+function closeGOB() {
+    gobEl.style.display = 'none';
+    gameRunning = false;
+    if (gameLoop) cancelAnimationFrame(gameLoop);
+    document.body.style.overflow = '';
+}
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', () => { if (gobEl.style.display === 'flex') resizeCanvas(); });
+
+// Start button
+document.getElementById('gobStartBtn').addEventListener('click', startGame);
+document.getElementById('gobRetryBtn').addEventListener('click', startGame);
+document.getElementById('gobExitBtn').addEventListener('click', closeGOB);
+
+function startGame() {
+    resizeCanvas();
+    resetGame();
+    G.player.x = canvas.width / 2;
+    G.player.y = canvas.height - 60;
+    gobStartEl.style.display = 'none';
+    gobOverEl.style.display = 'none';
+    gobHUD.style.display = 'flex';
+    gameRunning = true;
+    announceLevel();
+    tick();
+}
+
+function announceLevel() {
+    const sub = LEVEL_NAMES[Math.min(G.level - 1, LEVEL_NAMES.length - 1)];
+    document.getElementById('gobLevelText').textContent = 'LEVEL ' + G.level;
+    document.getElementById('gobLevelSub').textContent = sub;
+    gobLevelAnnounce.style.display = 'block';
+    gobLevelAnnounce.style.opacity = '1';
+    setTimeout(() => { gobLevelAnnounce.style.opacity = '0'; setTimeout(() => gobLevelAnnounce.style.display = 'none', 500); }, 2000);
+}
+
+// Input
+document.addEventListener('keydown', e => {
+    if (!gameRunning) {
+        if (e.key === 'Escape') closeGOB();
+        return;
+    }
+    G.keys[e.key] = true;
+    if (e.key === 'Escape') closeGOB();
+});
+document.addEventListener('keyup', e => { G.keys[e.key] = false; });
+
+// Touch
+canvas.addEventListener('touchstart', e => {
+    G.touch.active = true;
+    G.touch.x = e.touches[0].clientX;
+});
+canvas.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (G.touch.active) {
+        const nx = e.touches[0].clientX;
+        const dx = nx - G.touch.x;
+        G.player.x += dx * 1.3;
+        G.touch.x = nx;
+    }
+}, { passive: false });
+canvas.addEventListener('touchend', () => { G.touch.active = false; });
+
+function tick() {
+    if (!gameRunning) return;
+    gameLoop = requestAnimationFrame(tick);
+    update();
+    draw();
+}
+
+function update() {
+    const p = G.player;
+    G.frame++;
+    G.levelTimer++;
+
+    // Player movement
+    const spd = p.speed * (G.slowActive ? 1.4 : 1);
+    if (G.keys['ArrowLeft'] || G.keys['a'] || G.keys['A']) p.x -= spd;
+    if (G.keys['ArrowRight'] || G.keys['d'] || G.keys['D']) p.x += spd;
+    if (G.keys['ArrowUp'] || G.keys['w'] || G.keys['W']) p.y -= spd * 0.7;
+    if (G.keys['ArrowDown'] || G.keys['s'] || G.keys['S']) p.y += spd * 0.7;
+
+    // Clamp
+    p.x = Math.max(p.w, Math.min(canvas.width - p.w, p.x));
+    p.y = Math.max(canvas.height * 0.3, Math.min(canvas.height - 30, p.y));
+
+    // Trail
+    p.trail.push({ x: p.x, y: p.y, a: 1 });
+    if (p.trail.length > 12) p.trail.shift();
+    p.trail.forEach(t => t.a *= 0.88);
+
+    // Score
+    G.score += G.boostActive ? 2 : 1;
+
+    // Invincibility countdown
+    if (G.invincible > 0) G.invincible--;
+
+    // Power-up timers
+    if (G.slowActive) { G.slowTimer--; if (G.slowTimer <= 0) G.slowActive = false; }
+    if (G.boostActive) { G.boostTimer--; if (G.boostTimer <= 0) G.boostActive = false; }
+    if (G.shieldTimer > 0) G.shieldTimer--;
+    if (G.eaFlash > 0) G.eaFlash--;
+
+    // Level progression
+    if (G.levelTimer >= G.levelDuration) {
+        G.level++;
+        G.levelTimer = 0;
+        G.spawnRate = Math.max(8, 45 - G.level * 4);
+        G.swordSpeed = 2.5 + G.level * 0.5;
+        announceLevel();
+    }
+
+    // Spawn swords
+    if (G.frame % G.spawnRate === 0) {
+        const count = 1 + Math.floor(G.level / 3);
+        for (let i = 0; i < count; i++) {
+            const type = Math.random();
+            let sw = {
+                x: Math.random() * canvas.width,
+                y: -30,
+                vy: (G.swordSpeed + Math.random() * 1.5) * (G.slowActive ? 0.4 : 1),
+                vx: (Math.random() - 0.5) * (1 + G.level * 0.3),
+                w: 4,
+                h: 28,
+                rot: Math.random() * 0.3 - 0.15,
+                type: 'normal', // normal, fast, spiral
+                t: 0
+            };
+            if (G.level >= 3 && type > 0.8) {
+                sw.type = 'fast'; sw.vy *= 1.8; sw.h = 35;
             }
-        } else {
-            konamiIdx = 0;
+            if (G.level >= 5 && type > 0.9) {
+                sw.type = 'spiral'; sw.amplitude = 2 + Math.random() * 2;
+            }
+            G.swords.push(sw);
+        }
+    }
+
+    // Spawn power-ups
+    if (G.frame % 300 === 0 && Math.random() > 0.3) {
+        const types = ['shield', 'slow', 'boost', 'ea'];
+        const pt = types[Math.floor(Math.random() * types.length)];
+        G.powerups.push({
+            x: Math.random() * (canvas.width - 100) + 50,
+            y: -20,
+            vy: 1.5,
+            type: pt,
+            size: 14,
+            t: 0
+        });
+    }
+
+    // Update swords
+    const spdMult = G.slowActive ? 0.4 : 1;
+    G.swords.forEach(sw => {
+        sw.y += sw.vy * spdMult;
+        sw.x += sw.vx * spdMult;
+        sw.t++;
+        if (sw.type === 'spiral') {
+            sw.x += Math.sin(sw.t * 0.05) * sw.amplitude;
         }
     });
 
-    gilgaDiv.addEventListener('click', () => { gilgaDiv.style.display = 'none'; });
+    // Update power-ups
+    G.powerups.forEach(pw => { pw.y += pw.vy; pw.t++; });
 
-    // Also trigger by clicking footer 7 times
-    let footClicks = 0;
-    document.getElementById('footCredit').addEventListener('click', () => {
-        footClicks++;
-        if (footClicks >= 7) { gilgaDiv.style.display = 'flex'; footClicks = 0; }
+    // Collision: player vs swords
+    G.swords.forEach((sw, i) => {
+        const dx = Math.abs(p.x - sw.x);
+        const dy = Math.abs(p.y - sw.y);
+        if (dx < p.w + sw.w && dy < p.h + sw.h / 2) {
+            if (G.invincible > 0) return;
+            if (G.hasShield) {
+                G.hasShield = false;
+                G.swords.splice(i, 1);
+                spawnParticles(sw.x, sw.y, '#5e8ce8', 8);
+                return;
+            }
+            G.lives--;
+            G.invincible = 90; // 1.5 sec invincibility
+            spawnParticles(p.x, p.y, '#ff4444', 15);
+            G.swords.splice(i, 1);
+            if (G.lives <= 0) gameOver();
+        }
+        // Near miss scoring
+        if (dx < p.w + sw.w + 20 && dx > p.w + sw.w && dy < p.h + sw.h) {
+            G.score += G.boostActive ? 10 : 5;
+            if (Math.random() > 0.7) spawnParticles(p.x, p.y - 15, '#ededed', 2);
+        }
     });
 
-    console.log('%c⚔ Built by Gilgamesh ⚔', 'font-size: 16px; font-weight: bold; color: #ededed; background: #050505; padding: 8px 16px;');
-    console.log('%cThe King of Heroes does not simply write code. He bestows it upon his senior analyst.', 'font-size: 11px; color: #777;');
+    // Collision: player vs power-ups
+    G.powerups.forEach((pw, i) => {
+        const dx = Math.abs(p.x - pw.x);
+        const dy = Math.abs(p.y - pw.y);
+        if (dx < p.w + pw.size && dy < p.h + pw.size) {
+            switch (pw.type) {
+                case 'shield': G.hasShield = true; G.shieldTimer = 600; break;
+                case 'slow': G.slowActive = true; G.slowTimer = 300; break;
+                case 'boost': G.boostActive = true; G.boostTimer = 300; break;
+                case 'ea':
+                    G.swords = [];
+                    G.eaFlash = 20;
+                    G.score += 500;
+                    spawnParticles(canvas.width / 2, canvas.height / 2, '#ededed', 30);
+                    break;
+            }
+            const colors = { shield: '#5e8ce8', slow: '#a855f7', boost: '#22c55e', ea: '#ededed' };
+            spawnParticles(pw.x, pw.y, colors[pw.type], 10);
+            G.powerups.splice(i, 1);
+        }
+    });
+
+    // Remove off-screen
+    G.swords = G.swords.filter(sw => sw.y < canvas.height + 50 && sw.x > -50 && sw.x < canvas.width + 50);
+    G.powerups = G.powerups.filter(pw => pw.y < canvas.height + 50);
+
+    // Update particles
+    G.particles.forEach(pt => {
+        pt.x += pt.vx; pt.y += pt.vy;
+        pt.vy += 0.08; pt.a -= 0.025; pt.size *= 0.97;
+    });
+    G.particles = G.particles.filter(pt => pt.a > 0);
+
+    // Update HUD
+    document.getElementById('gobScore').textContent = G.score;
+    document.getElementById('gobLevel').textContent = 'Level ' + G.level;
+    document.getElementById('gobLives').textContent = '♦'.repeat(G.lives) + '◇'.repeat(Math.max(0, 3 - G.lives));
+
+    let pwText = '';
+    if (G.hasShield) pwText = '🛡 SHIELD';
+    if (G.slowActive) pwText = '⏳ SLOW TIME';
+    if (G.boostActive) pwText = '⚡ 2X SCORE';
+    document.getElementById('gobPowerup').textContent = pwText;
+}
+
+function spawnParticles(x, y, color, count) {
+    for (let i = 0; i < count; i++) {
+        G.particles.push({
+            x, y,
+            vx: (Math.random() - 0.5) * 6,
+            vy: (Math.random() - 0.5) * 6 - 2,
+            size: Math.random() * 4 + 2,
+            color, a: 1
+        });
+    }
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Ea flash
+    if (G.eaFlash > 0) {
+        ctx.fillStyle = `rgba(237,237,237,${G.eaFlash / 20 * 0.3})`;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // Slow time tint
+    if (G.slowActive) {
+        ctx.fillStyle = 'rgba(100, 50, 200, 0.04)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // Player trail
+    G.player.trail.forEach(t => {
+        ctx.globalAlpha = t.a * 0.3;
+        ctx.fillStyle = '#ededed';
+        ctx.beginPath();
+        ctx.arc(t.x, t.y, 6, 0, Math.PI * 2);
+        ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+
+    // Player
+    const p = G.player;
+    const blink = G.invincible > 0 && Math.floor(G.invincible / 5) % 2;
+    if (!blink) {
+        // Diamond shape
+        ctx.fillStyle = '#ededed';
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y - p.h);
+        ctx.lineTo(p.x + p.w, p.y);
+        ctx.lineTo(p.x, p.y + p.h * 0.6);
+        ctx.lineTo(p.x - p.w, p.y);
+        ctx.closePath();
+        ctx.fill();
+
+        // Shield visual
+        if (G.hasShield) {
+            ctx.strokeStyle = 'rgba(94, 140, 232, 0.6)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.w + 10, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+    }
+
+    // Swords
+    G.swords.forEach(sw => {
+        ctx.save();
+        ctx.translate(sw.x, sw.y);
+        ctx.rotate(sw.rot + Math.atan2(sw.vy, sw.vx) - Math.PI / 2);
+
+        // Sword blade
+        const gradient = ctx.createLinearGradient(0, -sw.h / 2, 0, sw.h / 2);
+        if (sw.type === 'fast') {
+            gradient.addColorStop(0, '#ff6b6b');
+            gradient.addColorStop(1, '#cc3333');
+        } else {
+            gradient.addColorStop(0, '#d4a853');
+            gradient.addColorStop(1, '#a07830');
+        }
+        ctx.fillStyle = gradient;
+        // Blade
+        ctx.beginPath();
+        ctx.moveTo(0, -sw.h / 2);
+        ctx.lineTo(sw.w, -sw.h / 4);
+        ctx.lineTo(sw.w * 0.6, sw.h / 2);
+        ctx.lineTo(-sw.w * 0.6, sw.h / 2);
+        ctx.lineTo(-sw.w, -sw.h / 4);
+        ctx.closePath();
+        ctx.fill();
+
+        // Glow
+        ctx.shadowColor = sw.type === 'fast' ? '#ff6b6b' : '#d4a853';
+        ctx.shadowBlur = 8;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Crossguard
+        ctx.fillStyle = '#888';
+        ctx.fillRect(-sw.w * 1.5, sw.h / 2 - 2, sw.w * 3, 4);
+
+        ctx.restore();
+    });
+
+    // Power-ups
+    G.powerups.forEach(pw => {
+        const colors = { shield: '#5e8ce8', slow: '#a855f7', boost: '#22c55e', ea: '#ededed' };
+        const symbols = { shield: '🛡', slow: '⏳', boost: '⚡', ea: '⚔' };
+        const pulse = 1 + Math.sin(pw.t * 0.08) * 0.15;
+
+        ctx.save();
+        ctx.translate(pw.x, pw.y);
+        ctx.scale(pulse, pulse);
+
+        // Glow ring
+        ctx.strokeStyle = colors[pw.type];
+        ctx.lineWidth = 1.5;
+        ctx.globalAlpha = 0.4 + Math.sin(pw.t * 0.1) * 0.3;
+        ctx.beginPath();
+        ctx.arc(0, 0, pw.size + 4, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Inner circle
+        ctx.globalAlpha = 0.9;
+        ctx.fillStyle = colors[pw.type];
+        ctx.beginPath();
+        ctx.arc(0, 0, pw.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Symbol
+        ctx.fillStyle = '#050505';
+        ctx.font = '12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(symbols[pw.type], 0, 0);
+
+        ctx.restore();
+        ctx.globalAlpha = 1;
+    });
+
+    // Particles
+    G.particles.forEach(pt => {
+        ctx.globalAlpha = pt.a;
+        ctx.fillStyle = pt.color;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
+        ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+
+    // Gate portals at top (decorative)
+    const portalCount = Math.min(G.level + 2, 12);
+    for (let i = 0; i < portalCount; i++) {
+        const px = (canvas.width / (portalCount + 1)) * (i + 1);
+        const glow = 0.05 + Math.sin(G.frame * 0.03 + i) * 0.03;
+        ctx.fillStyle = `rgba(212, 168, 83, ${glow})`;
+        ctx.beginPath();
+        ctx.ellipse(px, 10, 15, 25, 0, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function gameOver() {
+    gameRunning = false;
+    if (gameLoop) cancelAnimationFrame(gameLoop);
+    gobHUD.style.display = 'none';
+    gobOverEl.style.display = 'block';
+    document.getElementById('gobFinalScore').textContent = G.score;
+    document.getElementById('gobFinalLevel').textContent = 'Reached Level ' + G.level;
+}
+
+// ESC to exit game
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && gobEl.style.display === 'flex') closeGOB();
+});
+
+console.log('%c⚔ Built by Gilgamesh ⚔', 'font-size:16px;font-weight:bold;color:#ededed;background:#050505;padding:8px 16px;');
+console.log('%cThe King of Heroes does not simply write code. He bestows it upon his senior analyst.', 'font-size:11px;color:#777;');
 </script>
 </body>
 </html>
