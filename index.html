@@ -47,15 +47,41 @@ a { color: inherit; text-decoration: none; }
 #loader {
     position: fixed; inset: 0; background: var(--bg); z-index: 9999;
     display: flex; align-items: center; justify-content: center;
-    flex-direction: column; gap: 1.5rem;
+    flex-direction: column;
 }
-.loader-counter {
-    font-weight: 800; font-size: clamp(3rem, 8vw, 6rem);
-    letter-spacing: -0.03em; opacity: 0.15;
+.loader-inner {
+    display: flex; flex-direction: column; align-items: center; gap: 2rem;
+}
+.loader-name-reveal {
+    display: flex; gap: 0.15em;
+    font-weight: 800; font-size: clamp(1.2rem, 3vw, 1.8rem);
+    letter-spacing: 0.3em; text-transform: uppercase;
+}
+.loader-name-reveal span {
+    display: inline-block; opacity: 0;
+    transform: translateY(10px);
+}
+.loader-line-wrap {
+    width: clamp(150px, 30vw, 250px); height: 1px;
+    position: relative; overflow: hidden;
+    background: rgba(255,255,255,0.05);
+}
+.loader-line-fill {
+    position: absolute; top: 0; left: 50%;
+    width: 0%; height: 100%;
+    background: var(--fg);
+    transform: translateX(-50%);
+}
+.loader-percent {
+    font-family: var(--mono); font-size: 0.65rem;
+    letter-spacing: 0.2em; color: var(--dim);
     font-variant-numeric: tabular-nums;
 }
-.loader-bar { width: 120px; height: 1px; background: rgba(255,255,255,0.06); overflow: hidden; }
-.loader-fill { width: 0%; height: 100%; background: var(--fg); }
+.loader-bottom-text {
+    position: absolute; bottom: clamp(2rem, 4vh, 3rem);
+    font-size: 0.45rem; letter-spacing: 0.4em;
+    text-transform: uppercase; color: rgba(255,255,255,0.1);
+}
 
 /* ═══ NAV ═══ */
 .nav {
@@ -72,6 +98,7 @@ a { color: inherit; text-decoration: none; }
 }
 .nav-links a:hover { opacity: 1; }
 .nav-hamburger { display: none; background: none; border: none; cursor: pointer; }
+.nav-close-btn { display: none; }
 
 /* ═══ HERO ═══ */
 .hero {
@@ -195,12 +222,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ═══ FW SECTION ═══ */
-.fw-bg-text {
-    position: absolute; right: -5%; top: 50%; transform: translateY(-50%);
-    font-weight: 800; font-size: clamp(12rem, 30vw, 40rem);
-    color: var(--ghost); line-height: 1; pointer-events: none;
-    user-select: none;
-}
+/* FW section */
 .fw-layout {
     display: grid; grid-template-columns: 1.3fr 1fr;
     gap: clamp(2rem, 5vw, 5rem); margin-top: 2.5rem;
@@ -265,23 +287,26 @@ a { color: inherit; text-decoration: none; }
 .pub-pill:hover { border-color: var(--fg); color: var(--fg); }
 .pub-pill.hl { border-color: var(--fg); color: var(--fg); font-weight: 700; }
 
-/* ═══ PHOTO GALLERY — horizontal drag ═══ */
+/* ═══ PHOTO GALLERY — infinite auto-scroll ═══ */
 .gallery-outer {
-    overflow: hidden; cursor: grab;
+    overflow: hidden;
     padding: 2rem 0;
 }
-.gallery-outer::-webkit-scrollbar { display: none; }
-.gallery-outer:active { cursor: grabbing; }
+.gallery-track {
+    display: flex; gap: clamp(0.75rem, 1.5vw, 1.25rem);
+    width: max-content;
+    animation: galleryScroll 35s linear infinite;
+    user-select: none;
+}
+.gallery-outer:hover .gallery-track { animation-play-state: paused; }
+@keyframes galleryScroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
 
 /* Game canvas */
 #gobCanvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 #gobLevelAnnounce { transition: opacity 0.5s; }
-.gallery-track {
-    display: flex; gap: clamp(0.75rem, 1.5vw, 1.25rem);
-    padding: 0 clamp(1.5rem, 5vw, 4rem);
-    will-change: transform;
-    user-select: none;
-}
 .gallery-item {
     flex-shrink: 0;
     width: clamp(280px, 35vw, 450px);
@@ -358,10 +383,16 @@ a { color: inherit; text-decoration: none; }
     .nav-hamburger { display: block; }
     .nav-links.open {
         display: flex; flex-direction: column; position: fixed; inset: 0;
-        background: rgba(5,5,5,0.97); backdrop-filter: blur(16px);
-        justify-content: center; align-items: center; gap: 2rem; z-index: 999;
+        background: rgba(5,5,5,0.92);
+        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        justify-content: center; align-items: center; gap: 2.5rem; z-index: 999;
     }
-    .nav-links.open a { font-size: 1rem; opacity: 1; }
+    .nav-links.open a { font-size: 1.2rem; opacity: 1; letter-spacing: 0.15em; }
+    .nav-close-btn { display: none; position: fixed; top: 1.25rem; right: 1.5rem; z-index: 1001; background: none; border: none; cursor: pointer; opacity: 0; animation: navLinkFade 0.3s ease-out 0.2s forwards; }
+    @keyframes navLinkFade {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
     .work-layout { grid-template-columns: 1fr; }
     .fw-layout { grid-template-columns: 1fr; }
     .foot { flex-direction: column; gap: 0.5rem; align-items: center; }
@@ -373,8 +404,18 @@ a { color: inherit; text-decoration: none; }
 <div id="scrollProgress"></div>
 
 <div id="loader">
-    <div class="loader-counter" id="loaderCount">0</div>
-    <div class="loader-bar"><div class="loader-fill" id="loaderFill"></div></div>
+    <div class="loader-inner">
+        <div class="loader-name-reveal" id="loaderName">
+            <span>N</span><span>O</span><span>A</span><span>H</span>
+            <span style="width:0.5em"></span>
+            <span>H</span><span>U</span><span>N</span><span>T</span><span>E</span><span>R</span>
+        </div>
+        <div class="loader-line-wrap">
+            <div class="loader-line-fill" id="loaderLine"></div>
+        </div>
+        <div class="loader-percent" id="loaderPercent">000</div>
+    </div>
+    <div class="loader-bottom-text">Dallas, Texas</div>
 </div>
 
 <nav class="nav">
@@ -390,6 +431,12 @@ a { color: inherit; text-decoration: none; }
             <line y1="1" x2="22" y2="1" stroke="#ededed" stroke-width="1.5"/>
             <line y1="7" x2="22" y2="7" stroke="#ededed" stroke-width="1.5"/>
             <line y1="13" x2="22" y2="13" stroke="#ededed" stroke-width="1.5"/>
+        </svg>
+    </button>
+    <button class="nav-close-btn" id="navCloseBtn" aria-label="Close menu">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <line x1="2" y1="2" x2="18" y2="18" stroke="#ededed" stroke-width="1.5"/>
+            <line x1="18" y1="2" x2="2" y2="18" stroke="#ededed" stroke-width="1.5"/>
         </svg>
     </button>
 </nav>
@@ -437,7 +484,6 @@ a { color: inherit; text-decoration: none; }
 
 <!-- ═══ FINAL WEAPON ═══ -->
 <section class="scene" id="fw" style="overflow:hidden; position:relative;">
-    <div class="fw-bg-text">FW</div>
     <div class="content-wrap">
         <p class="scene-eyebrow">From Passion to Action</p>
         <h2 class="scene-heading split-heading">Final Weapon — My Vision for Modern Games Media.</h2>
@@ -533,9 +579,45 @@ a { color: inherit; text-decoration: none; }
                     <div class="gallery-cap-sub">Owen Field · Norman, OK</div>
                 </div>
             </div>
+            <!-- Duplicate set for seamless infinite scroll -->
+            <div class="gallery-item">
+                <img src="img/kojima.jpg" alt="Meeting Hideo Kojima" draggable="false">
+                <div class="gallery-caption">
+                    <div class="gallery-cap-title">Meeting Hideo Kojima</div>
+                    <div class="gallery-cap-sub">Summer Game Fest, 2025</div>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="img/ou-game.jpg" alt="Red River Rivalry" draggable="false">
+                <div class="gallery-caption">
+                    <div class="gallery-cap-title">Red River Rivalry</div>
+                    <div class="gallery-cap-sub">OU vs. Texas · Cotton Bowl</div>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="img/dq-event.jpg" alt="Dragon Quest III event" draggable="false">
+                <div class="gallery-caption">
+                    <div class="gallery-cap-title">Dragon Quest III Preview</div>
+                    <div class="gallery-cap-sub">Press Event · Square Enix</div>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="img/japan-forge.jpg" alt="Knife forging in Japan" draggable="false">
+                <div class="gallery-caption">
+                    <div class="gallery-cap-title">Knife Forging in Japan</div>
+                    <div class="gallery-cap-sub">Traditional Blacksmith Workshop</div>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="img/ou-family.jpg" alt="Bye Bye, Bama" draggable="false">
+                <div class="gallery-caption">
+                    <div class="gallery-cap-title">Sooner Born, Sooner Bred</div>
+                    <div class="gallery-cap-sub">Owen Field · Norman, OK</div>
+                </div>
+            </div>
         </div>
     </div>
-    <p class="gallery-hint">Drag to explore →</p>
+    <p class="gallery-hint">Hover to pause</p>
 </section>
 
 <!-- ═══ CONTACT ═══ -->
@@ -544,7 +626,7 @@ a { color: inherit; text-decoration: none; }
         <h2 class="contact-heading split-heading">Let's talk.</h2>
         <p class="contact-sub">Analytics, editorial, or something else entirely — I'm always open to meeting curious people.</p>
         <div class="contact-pills">
-            <a href="mailto:noahbhunter1883@gmail.com" class="pill solid">Email Me</a>
+            <a href="javascript:void(0)" id="emailBtn" class="pill solid">Email Me</a>
             <a href="https://www.linkedin.com/in/noahbhunter/" target="_blank" rel="noopener" class="pill">LinkedIn ↗</a>
             <a href="https://finalweapon.net" target="_blank" rel="noopener" class="pill">Final Weapon ↗</a>
         </div>
@@ -565,16 +647,26 @@ a { color: inherit; text-decoration: none; }
     <!-- CRT flicker -->
     <style>
         @keyframes crtFlicker { 0%,100%{opacity:0.97} 50%{opacity:1} }
+        @keyframes shelfFloat { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-4px); } }
+        @keyframes titleGlow { 0%,100%{ text-shadow: 0 0 10px rgba(51,255,102,0.5), 0 0 30px rgba(51,255,102,0.2); } 50%{ text-shadow: 0 0 15px rgba(51,255,102,0.7), 0 0 50px rgba(51,255,102,0.3), 0 0 80px rgba(51,255,102,0.1); } }
         #crtShelf { animation: crtFlicker 0.1s infinite; }
-        .shelf-title { font-family: 'Space Mono', monospace; font-size: clamp(1rem,3vw,1.5rem); font-weight: 700; color: #33ff66; text-transform: uppercase; letter-spacing: 0.2em; text-align: center; padding-top: clamp(2rem,5vh,4rem); text-shadow: 0 0 10px rgba(51,255,102,0.5), 0 0 30px rgba(51,255,102,0.2); position: relative; z-index: 2; }
+        .shelf-title { font-family: 'Space Mono', monospace; font-size: clamp(1rem,3vw,1.5rem); font-weight: 700; color: #33ff66; text-transform: uppercase; letter-spacing: 0.2em; text-align: center; padding-top: clamp(2rem,5vh,4rem); text-shadow: 0 0 10px rgba(51,255,102,0.5), 0 0 30px rgba(51,255,102,0.2); position: relative; z-index: 2; animation: titleGlow 3s ease-in-out infinite; }
         .shelf-sub { font-family: 'Space Mono', monospace; font-size: 0.55rem; color: rgba(51,255,102,0.4); text-align: center; letter-spacing: 0.3em; text-transform: uppercase; margin-top: 0.5rem; position: relative; z-index: 2; }
         .shelf-close { font-family: 'Space Mono', monospace; font-size: 0.5rem; color: rgba(51,255,102,0.3); text-align: center; letter-spacing: 0.2em; text-transform: uppercase; margin-top: 0.5rem; position: relative; z-index: 2; }
         .shelf-container { display: flex; gap: clamp(1rem,2vw,1.5rem); padding: clamp(2rem,4vh,3rem) clamp(1.5rem,5vw,4rem); overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -ms-overflow-style: none; position: relative; z-index: 2; height: calc(100vh - 10rem); align-items: center; cursor: grab; }
         .shelf-container::-webkit-scrollbar { display: none; }
         .shelf-container:active { cursor: grabbing; }
-        .game-case { flex-shrink: 0; width: clamp(200px,22vw,280px); height: clamp(280px,40vh,400px); border: 1px solid rgba(51,255,102,0.15); background: rgba(51,255,102,0.03); border-radius: 4px; display: flex; flex-direction: column; justify-content: flex-end; padding: 1.5rem; position: relative; overflow: hidden; transition: all 0.4s cubic-bezier(0.16,1,0.3,1); cursor: default; }
-        .game-case:hover { border-color: rgba(51,255,102,0.5); background: rgba(51,255,102,0.06); transform: translateY(-8px); box-shadow: 0 0 30px rgba(51,255,102,0.08); }
+        .game-case { flex-shrink: 0; width: clamp(200px,22vw,280px); height: clamp(280px,40vh,400px); border: 1px solid rgba(51,255,102,0.15); background: rgba(51,255,102,0.03); border-radius: 4px; display: flex; flex-direction: column; justify-content: flex-end; padding: 1.5rem; position: relative; overflow: hidden; transition: all 0.4s cubic-bezier(0.16,1,0.3,1); cursor: default; opacity: 0; transform: translateY(30px); }
+        .game-case.visible { opacity: 1; transform: translateY(0); animation: shelfFloat 4s ease-in-out infinite; animation-delay: calc(var(--delay, 0) * 0.3s); }
+        .game-case:hover { border-color: rgba(51,255,102,0.5); background: rgba(51,255,102,0.06); transform: translateY(-8px) scale(1.02); box-shadow: 0 0 40px rgba(51,255,102,0.1), 0 20px 60px rgba(0,0,0,0.4); animation-play-state: paused; }
         .game-case::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%; background: linear-gradient(180deg, rgba(51,255,102,0.04), transparent); pointer-events: none; }
+        .game-cover { position: absolute; top: 0; left: 0; right: 0; height: 55%; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .game-cover-art { width: 100%; height: 100%; object-fit: cover; filter: grayscale(30%) brightness(0.7) contrast(1.1); transition: all 0.5s cubic-bezier(0.16,1,0.3,1); }
+        .game-case:hover .game-cover-art { filter: grayscale(0%) brightness(0.85) contrast(1.05); transform: scale(1.08); }
+        .game-cover-gradient { position: absolute; bottom: 0; left: 0; right: 0; height: 70%; background: linear-gradient(transparent, #0a0f0a); pointer-events: none; }
+        .game-cover::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.12) 2px, rgba(0,0,0,0.12) 4px); pointer-events: none; z-index: 1; }
+        .game-cover-initials { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: clamp(2.5rem,4vw,3.5rem); color: rgba(51,255,102,0.08); letter-spacing: 0.05em; position: relative; z-index: 1; transition: color 0.4s; }
+        .game-case:hover .game-cover-initials { color: rgba(51,255,102,0.15); }
         .game-rank { position: absolute; top: 1rem; left: 1.25rem; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: clamp(3rem,5vw,4.5rem); color: rgba(51,255,102,0.06); line-height: 1; }
         .game-case:hover .game-rank { color: rgba(51,255,102,0.12); }
         .game-platform { font-family: 'Space Mono', monospace; font-size: 0.45rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(51,255,102,0.35); margin-bottom: 0.75rem; }
@@ -587,63 +679,99 @@ a { color: inherit; text-decoration: none; }
     <div class="shelf-sub">Top Games · All Time · Ranked</div>
     <div class="shelf-close">Drag to browse · Press ESC or click to close</div>
     <div class="shelf-container" id="shelfContainer">
-        <div class="game-case">
+        <div class="game-case" style="--delay:0">
+            <div class="game-cover">
+                <img class="game-cover-art" src="img/covers/ff7.jpg" alt="Final Fantasy VII">
+                <div class="game-cover-gradient"></div>
+            </div>
             <div class="game-rank">01</div>
             <div class="game-platform">PS1 / PS4 / PC</div>
             <div class="game-title">Final Fantasy VII</div>
             <div class="game-comment">The one that started it all. Nothing else compares.</div>
             <span class="game-tag">JRPG</span>
         </div>
-        <div class="game-case">
+        <div class="game-case" style="--delay:1">
+            <div class="game-cover">
+                <img class="game-cover-art" src="img/covers/xc2.jpg" alt="Xenoblade Chronicles 2">
+                <div class="game-cover-gradient"></div>
+            </div>
             <div class="game-rank">02</div>
             <div class="game-platform">Nintendo Switch</div>
             <div class="game-title">Xenoblade Chronicles 2</div>
             <div class="game-comment">The best world-building in gaming. Rex and Pyra forever.</div>
             <span class="game-tag">JRPG</span>
         </div>
-        <div class="game-case">
+        <div class="game-case" style="--delay:2">
+            <div class="game-cover">
+                <img class="game-cover-art" src="img/covers/kh2.jpg" alt="Kingdom Hearts II">
+                <div class="game-cover-gradient"></div>
+            </div>
             <div class="game-rank">03</div>
             <div class="game-platform">PS2 / PS4</div>
             <div class="game-title">Kingdom Hearts II</div>
             <div class="game-comment">Peak action-RPG combat. Roxas intro hits different every time.</div>
             <span class="game-tag">Action RPG</span>
         </div>
-        <div class="game-case">
+        <div class="game-case" style="--delay:3">
+            <div class="game-cover">
+                <img class="game-cover-art" src="img/covers/ds2.jpg" alt="Death Stranding 2">
+                <div class="game-cover-gradient"></div>
+            </div>
             <div class="game-rank">04</div>
             <div class="game-platform">PS5 / PC</div>
             <div class="game-title">Death Stranding 2: On The Beach</div>
             <div class="game-comment">Kojima outdid himself. This is art.</div>
             <span class="game-tag">Action</span>
         </div>
-        <div class="game-case">
+        <div class="game-case" style="--delay:4">
+            <div class="game-cover">
+                <img class="game-cover-art" src="img/covers/re4.jpg" alt="Resident Evil 4">
+                <div class="game-cover-gradient"></div>
+            </div>
             <div class="game-rank">05</div>
             <div class="game-platform">Multi-Platform</div>
             <div class="game-title">Resident Evil 4</div>
             <div class="game-comment">The remake AND the original. Both masterpieces.</div>
             <span class="game-tag">Survival Horror</span>
         </div>
-        <div class="game-case">
+        <div class="game-case" style="--delay:5">
+            <div class="game-cover">
+                <img class="game-cover-art" src="img/covers/xenogears.jpg" alt="Xenogears">
+                <div class="game-cover-gradient"></div>
+            </div>
             <div class="game-rank">06</div>
             <div class="game-platform">PS1</div>
             <div class="game-title">Xenogears</div>
             <div class="game-comment">The most ambitious story ever attempted in a video game.</div>
             <span class="game-tag">JRPG</span>
         </div>
-        <div class="game-case">
+        <div class="game-case" style="--delay:6">
+            <div class="game-cover">
+                <img class="game-cover-art" src="img/covers/nier.jpg" alt="NieR Replicant">
+                <div class="game-cover-gradient"></div>
+            </div>
             <div class="game-rank">07</div>
             <div class="game-platform">PS4 / PC</div>
             <div class="game-title">NieR Replicant ver.1.22...</div>
             <div class="game-comment">Yoko Taro is a genius. This game broke me.</div>
             <span class="game-tag">Action RPG</span>
         </div>
-        <div class="game-case">
+        <div class="game-case" style="--delay:7">
+            <div class="game-cover">
+                <img class="game-cover-art" src="img/covers/fate.jpg" alt="Fate/stay night">
+                <div class="game-cover-gradient"></div>
+            </div>
             <div class="game-rank">08</div>
             <div class="game-platform">PC / Visual Novel</div>
             <div class="game-title">Fate/stay night</div>
             <div class="game-comment">The bone of my sword. Unlimited Blade Works route, obviously.</div>
             <span class="game-tag">Visual Novel</span>
         </div>
-        <div class="game-case">
+        <div class="game-case" style="--delay:8">
+            <div class="game-cover">
+                <img class="game-cover-art" src="img/covers/ds1.jpg" alt="Death Stranding">
+                <div class="game-cover-gradient"></div>
+            </div>
             <div class="game-rank">09</div>
             <div class="game-platform">PS4 / PC</div>
             <div class="game-title">Death Stranding</div>
@@ -693,22 +821,48 @@ a { color: inherit; text-decoration: none; }
 <script>
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
-/* ═══ LOADER (counts up like plan-az) ═══ */
-const loaderCount = document.getElementById('loaderCount');
-const loaderFill = document.getElementById('loaderFill');
+/* ═══ LOADER — cinematic reveal ═══ */
+const loaderLine = document.getElementById('loaderLine');
+const loaderPercent = document.getElementById('loaderPercent');
+const loaderLetters = document.querySelectorAll('#loaderName span');
 let prog = 0;
+let lettersRevealed = 0;
+
+// Stagger letter reveals as progress climbs
+const letterThresholds = [5, 12, 20, 28, 33, 40, 50, 60, 70, 80, 88];
+
 const loadTick = setInterval(() => {
-    prog += Math.floor(Math.random() * 15) + 5;
+    prog += Math.floor(Math.random() * 8) + 3;
     if (prog >= 100) { prog = 100; clearInterval(loadTick);
         setTimeout(() => {
-            gsap.to('#loader', { opacity: 0, duration: 0.6, ease: 'power2.inOut',
+            // Exit animation: letters drift up, line expands, then fade
+            gsap.to('#loaderName span', {
+                y: -20, opacity: 0, duration: 0.5, stagger: 0.03, ease: 'power2.in'
+            });
+            gsap.to('.loader-percent', { opacity: 0, duration: 0.3, delay: 0.2 });
+            gsap.to('.loader-line-fill', { width: '120%', opacity: 0, duration: 0.6, delay: 0.1, ease: 'power2.in' });
+            gsap.to('.loader-bottom-text', { opacity: 0, duration: 0.3 });
+            gsap.to('#loader', { opacity: 0, duration: 0.5, delay: 0.6, ease: 'power2.inOut',
                 onComplete: () => { document.getElementById('loader').style.display = 'none'; heroReveal(); }
             });
-        }, 400);
+        }, 500);
     }
-    loaderCount.textContent = prog;
-    loaderFill.style.width = prog + '%';
-}, 120);
+
+    // Update percent display (zero-padded)
+    loaderPercent.textContent = String(prog).padStart(3, '0');
+
+    // Update center line
+    loaderLine.style.width = prog + '%';
+
+    // Reveal letters at thresholds
+    while (lettersRevealed < letterThresholds.length && prog >= letterThresholds[lettersRevealed]) {
+        const letter = loaderLetters[lettersRevealed];
+        if (letter && letter.style.width !== '0.5em') {
+            gsap.to(letter, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' });
+        }
+        lettersRevealed++;
+    }
+}, 100);
 
 /* ═══ HERO REVEAL ═══ */
 function heroReveal() {
@@ -721,17 +875,47 @@ function heroReveal() {
 }
 
 /* ═══ TYPING ═══ */
-const roles = ['a Data Scientist.', 'an Editor-in-Chief.', 'a Journalist.', 'a Problem Solver.', 'a Power BI Developer.', 'the Bone of My Sword.', 'a Data Engineer.', 'a Storyteller.', 'a Sooner.'];
+const roles = ['a Data Scientist.', 'an Editor-in-Chief.', 'a Journalist.', 'a Problem Solver.', 'a Power BI Developer.', 'a Data Engineer.', 'a Storyteller.', 'a Sooner.'];
 let rIdx = 0;
 const tEl = document.getElementById('typingRole');
-function startTyping() { typeR(roles[0]); }
-function typeR(text) {
-    let i = 0; tEl.textContent = '';
-    const t = setInterval(() => { tEl.textContent += text[i]; i++; if (i >= text.length) { clearInterval(t); setTimeout(() => delR(text), 2200); } }, 65);
+
+function startTyping() {
+    if (!tEl) return;
+    typeR(roles[0]);
 }
+
+function typeR(text) {
+    if (!tEl || !text) return;
+    let i = 0;
+    tEl.textContent = '';
+    const t = setInterval(() => {
+        try {
+            if (i < text.length) {
+                tEl.textContent = text.substring(0, i + 1);
+                i++;
+            }
+            if (i >= text.length) {
+                clearInterval(t);
+                setTimeout(() => delR(text), 2200);
+            }
+        } catch(e) { clearInterval(t); }
+    }, 65);
+}
+
 function delR(text) {
+    if (!tEl || !text) return;
     let i = text.length;
-    const t = setInterval(() => { i--; tEl.textContent = text.substring(0, i); if (i <= 0) { clearInterval(t); rIdx = (rIdx + 1) % roles.length; setTimeout(() => typeR(roles[rIdx]), 350); } }, 30);
+    const t = setInterval(() => {
+        try {
+            i--;
+            tEl.textContent = text.substring(0, i);
+            if (i <= 0) {
+                clearInterval(t);
+                rIdx = (rIdx + 1) % roles.length;
+                setTimeout(() => typeR(roles[rIdx]), 350);
+            }
+        } catch(e) { clearInterval(t); }
+    }, 30);
 }
 
 /* ═══ SCROLL PROGRESS BAR ═══ */
@@ -801,52 +985,34 @@ document.querySelectorAll('.fw-stat .num[data-count]').forEach(el => {
     });
 });
 
-/* ═══ DRAGGABLE PHOTO GALLERY ═══ */
-const gallery = document.getElementById('gallery');
-const track = document.getElementById('galleryTrack');
-let isDragging = false, startX, scrollLeft;
-
-gallery.addEventListener('mousedown', e => {
-    isDragging = true; startX = e.pageX - gallery.offsetLeft;
-    scrollLeft = gallery.scrollLeft;
-});
-gallery.addEventListener('mousemove', e => {
-    if (!isDragging) return; e.preventDefault();
-    const x = e.pageX - gallery.offsetLeft;
-    gallery.scrollLeft = scrollLeft - (x - startX) * 1.5;
-});
-gallery.addEventListener('mouseup', () => isDragging = false);
-gallery.addEventListener('mouseleave', () => isDragging = false);
-
-// Touch support
-gallery.addEventListener('touchstart', e => { startX = e.touches[0].pageX; scrollLeft = gallery.scrollLeft; });
-gallery.addEventListener('touchmove', e => {
-    const x = e.touches[0].pageX;
-    gallery.scrollLeft = scrollLeft - (x - startX);
-});
-
-// Make gallery scrollable
-gallery.style.overflowX = 'auto';
-gallery.style.scrollbarWidth = 'none';
-gallery.style.msOverflowStyle = 'none';
-
-/* ═══ PARALLAX ON FW BACKGROUND TEXT ═══ */
-gsap.to('.fw-bg-text', {
-    scrollTrigger: { trigger: '#fw', start: 'top bottom', end: 'bottom top', scrub: true },
-    y: -120, ease: 'none'
-});
-
 /* ═══ NAV ═══ */
 const menuBtn = document.getElementById('menuBtn');
 const navLinks = document.getElementById('navLinks');
-menuBtn.addEventListener('click', () => navLinks.classList.toggle('open'));
-navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+const navCloseBtn = document.getElementById('navCloseBtn');
+const navEl = document.querySelector('.nav');
+
+function openNav() {
+    navLinks.classList.add('open');
+    navCloseBtn.style.display = 'block';
+    navEl.style.mixBlendMode = 'normal';
+}
+function closeNav() {
+    navLinks.classList.remove('open');
+    navCloseBtn.style.display = 'none';
+    navEl.style.mixBlendMode = 'difference';
+}
+
+menuBtn.addEventListener('click', openNav);
+navCloseBtn.addEventListener('click', closeNav);
+navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
 
 /* ═══ SMOOTH SCROLL ═══ */
 document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (!href || href === '#' || href.includes('mailto')) return;
         e.preventDefault();
-        const t = document.querySelector(this.getAttribute('href'));
+        const t = document.querySelector(href);
         if (t) gsap.to(window, { scrollTo: { y: t }, duration: 1, ease: 'power3.inOut' });
     });
 });
@@ -867,6 +1033,12 @@ document.addEventListener('keydown', e => {
 function openShelf() {
     shelfEl.style.display = 'block';
     document.body.style.overflow = 'hidden';
+    // Staggered entrance animation
+    const cases = shelfEl.querySelectorAll('.game-case');
+    cases.forEach((c, i) => {
+        c.classList.remove('visible');
+        setTimeout(() => c.classList.add('visible'), 150 + i * 80);
+    });
 }
 
 function closeShelf() {
@@ -940,7 +1112,7 @@ function resetGame() {
         levelTimer: 0,
         levelDuration: 900, // 15 seconds at 60fps
         keys: {},
-        touch: { active: false, x: 0 },
+        touch: { active: false, x: 0, y: 0 },
         invincible: 0,
         nearMissScore: 0
     };
@@ -1024,14 +1196,19 @@ document.addEventListener('keyup', e => { G.keys[e.key] = false; });
 canvas.addEventListener('touchstart', e => {
     G.touch.active = true;
     G.touch.x = e.touches[0].clientX;
+    G.touch.y = e.touches[0].clientY;
 });
 canvas.addEventListener('touchmove', e => {
     e.preventDefault();
     if (G.touch.active) {
         const nx = e.touches[0].clientX;
+        const ny = e.touches[0].clientY;
         const dx = nx - G.touch.x;
+        const dy = ny - G.touch.y;
         G.player.x += dx * 1.3;
+        G.player.y += dy * 1.3;
         G.touch.x = nx;
+        G.touch.y = ny;
     }
 }, { passive: false });
 canvas.addEventListener('touchend', () => { G.touch.active = false; });
@@ -1085,21 +1262,25 @@ function update() {
         announceLevel();
     }
 
-    // Spawn swords
+    // Spawn swords FROM portals
     if (G.frame % G.spawnRate === 0) {
         const count = 1 + Math.floor(G.level / 3);
+        const pCount = Math.min(G.level + 2, 12);
         for (let i = 0; i < count; i++) {
+            const portalIdx = Math.floor(Math.random() * pCount);
+            const portalX = (canvas.width / (pCount + 1)) * (portalIdx + 1);
             const type = Math.random();
             let sw = {
-                x: Math.random() * canvas.width,
-                y: -30,
+                x: portalX + (Math.random() - 0.5) * 10,
+                y: -10,
                 vy: (G.swordSpeed + Math.random() * 1.5) * (G.slowActive ? 0.4 : 1),
                 vx: (Math.random() - 0.5) * (1 + G.level * 0.3),
                 w: 4,
                 h: 28,
                 rot: Math.random() * 0.3 - 0.15,
-                type: 'normal', // normal, fast, spiral
-                t: 0
+                type: 'normal',
+                t: 0,
+                portalFlash: portalIdx
             };
             if (G.level >= 3 && type > 0.8) {
                 sw.type = 'fast'; sw.vy *= 1.8; sw.h = 35;
@@ -1108,6 +1289,8 @@ function update() {
                 sw.type = 'spiral'; sw.amplitude = 2 + Math.random() * 2;
             }
             G.swords.push(sw);
+            // Spawn flash particles at portal
+            spawnParticles(portalX, 15, '#d4a853', 3);
         }
     }
 
@@ -1355,14 +1538,49 @@ function draw() {
     });
     ctx.globalAlpha = 1;
 
-    // Gate portals at top (decorative)
+    // Gate portals at top — golden rippling portals swords emerge from
     const portalCount = Math.min(G.level + 2, 12);
     for (let i = 0; i < portalCount; i++) {
         const px = (canvas.width / (portalCount + 1)) * (i + 1);
-        const glow = 0.05 + Math.sin(G.frame * 0.03 + i) * 0.03;
-        ctx.fillStyle = `rgba(212, 168, 83, ${glow})`;
+        const pulse = Math.sin(G.frame * 0.04 + i * 1.2);
+        const baseSize = 18 + pulse * 4;
+
+        // Outer glow
+        const outerGrad = ctx.createRadialGradient(px, 15, 0, px, 15, baseSize + 20);
+        outerGrad.addColorStop(0, `rgba(212, 168, 83, ${0.15 + pulse * 0.05})`);
+        outerGrad.addColorStop(0.5, `rgba(212, 168, 83, ${0.05 + pulse * 0.02})`);
+        outerGrad.addColorStop(1, 'rgba(212, 168, 83, 0)');
+        ctx.fillStyle = outerGrad;
         ctx.beginPath();
-        ctx.ellipse(px, 10, 15, 25, 0, 0, Math.PI * 2);
+        ctx.ellipse(px, 15, baseSize + 20, baseSize + 30, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Inner portal ellipse
+        const innerGrad = ctx.createRadialGradient(px, 15, 0, px, 15, baseSize);
+        innerGrad.addColorStop(0, `rgba(255, 220, 120, ${0.3 + pulse * 0.1})`);
+        innerGrad.addColorStop(0.6, `rgba(212, 168, 83, ${0.15 + pulse * 0.05})`);
+        innerGrad.addColorStop(1, 'rgba(212, 168, 83, 0)');
+        ctx.fillStyle = innerGrad;
+        ctx.beginPath();
+        ctx.ellipse(px, 15, baseSize, baseSize * 1.4, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Ripple rings
+        for (let r = 0; r < 2; r++) {
+            const ripplePhase = (G.frame * 0.02 + i + r * 3.14) % 6.28;
+            const rippleAlpha = Math.max(0, 0.15 - (ripplePhase / 6.28) * 0.15);
+            const rippleSize = baseSize + (ripplePhase / 6.28) * 25;
+            ctx.strokeStyle = `rgba(212, 168, 83, ${rippleAlpha})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.ellipse(px, 15, rippleSize, rippleSize * 1.3, 0, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+
+        // Center bright core
+        ctx.fillStyle = `rgba(255, 240, 180, ${0.2 + pulse * 0.1})`;
+        ctx.beginPath();
+        ctx.ellipse(px, 15, 4, 6, 0, 0, Math.PI * 2);
         ctx.fill();
     }
 }
@@ -1383,6 +1601,9 @@ document.addEventListener('keydown', e => {
 
 console.log('%c⚔ Built by Gilgamesh ⚔', 'font-size:16px;font-weight:bold;color:#ededed;background:#050505;padding:8px 16px;');
 console.log('%cThe King of Heroes does not simply write code. He bestows it upon his senior analyst.', 'font-size:11px;color:#777;');
+
+// Email (constructed to avoid Cloudflare obfuscation)
+document.getElementById('emailBtn').href = 'mai' + 'lto:' + 'noahbhunter' + '1883' + '@gm' + 'ail.com';
 </script>
 </body>
 </html>
