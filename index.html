@@ -202,21 +202,27 @@ a { color: inherit; text-decoration: none; }
 .toolkit {
     border: 1px solid var(--faint); padding: clamp(1.5rem, 3vw, 2.5rem);
     position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-content: flex-start;
 }
 .toolkit::before {
-    content: 'TOOLKIT'; position: absolute;
+    content: 'WORKING WITH'; position: absolute;
     top: -0.5rem; left: 1.5rem;
     background: var(--bg); padding: 0 0.5rem;
     font-size: 0.5rem; font-weight: 700;
     letter-spacing: 0.25em; color: var(--dim);
 }
 .tk-row {
-    display: flex; justify-content: space-between; align-items: baseline;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--ghost);
+    display: inline-flex;
+    align-items: center;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--ghost);
+    background: rgba(255,255,255,0.02);
 }
 .tk-row:last-child { border-bottom: none; }
-.tk-name { font-size: 0.85rem; font-weight: 500; }
+.tk-name { font-size: 0.8rem; font-weight: 500; line-height: 1.2; }
 .tk-level {
     font-size: 0.5rem; font-weight: 600; letter-spacing: 0.12em;
     text-transform: uppercase; color: var(--dim);
@@ -341,6 +347,16 @@ a { color: inherit; text-decoration: none; }
     font-size: 0.5rem; letter-spacing: 0.3em;
     text-transform: uppercase; color: var(--dim);
 }
+.life-note {
+    max-width: 760px;
+    margin: 3.5rem auto 0;
+    text-align: center;
+}
+.life-note .body-text {
+    max-width: none;
+    margin-left: auto;
+    margin-right: auto;
+}
 
 /* ═══ CONTACT ═══ */
 .scene-contact {
@@ -447,7 +463,7 @@ a { color: inherit; text-decoration: none; }
     <p class="hero-greeting">Hey, I'm</p>
     <h1 class="hero-name">
         <span class="ln"><span>Noah</span></span>
-        <span class="ln"><span>Hunter.</span></span>
+        <span class="ln"><span>Hunter</span></span>
     </h1>
     <div class="hero-typing">
         <span class="hero-typing-static">I am</span>
@@ -463,21 +479,26 @@ a { color: inherit; text-decoration: none; }
 <section class="scene" id="work">
     <div class="content-wrap">
         <p class="scene-eyebrow">What I Do</p>
-        <h2 class="scene-heading split-heading">Data & AI Engineering at North Highland.</h2>
+        <h2 class="scene-heading split-heading">Data & AI Engineering at North Highland</h2>
         <div class="work-layout">
             <div>
-                <p class="body-text">I'm an Analyst on North Highland's <strong>Data & AI Engineering</strong> team, based in Dallas, Texas. I graduated in 2025 from The University of Oklahoma with a BBA and a Master of Science in Management of Information Technology.</p>
-                <p class="body-text">My areas of focus span <strong>data engineering, data visualization, data science, artificial intelligence, machine learning</strong>, and related technologies. Day to day, that means building <strong>Power BI dashboards</strong> from the ground up, writing complex <strong>DAX frameworks</strong>, integrating <strong>Snowflake</strong> data pipelines, and resolving the kinds of composite model conflicts that make people want to throw their laptop out a window.</p>
-                <p class="body-text">I've also built capability presentations around <strong>Azure Document Intelligence</strong> and OCR — including a real-world signature detection case study combining Azure, GPT vision, and PyTorch. If there's a way to make data smarter, I'm probably already poking at it.</p>
+                <p class="body-text">I'm an Analyst on North Highland's <strong>Data & AI Engineering</strong> team in Dallas, Texas. I graduated from the University of Oklahoma in 2025 with a BBA and a Master of Science in Management of Information Technology.</p>
+                <p class="body-text">I work across <strong>data engineering, analytics, and AI</strong> to build end-to-end solutions for client problems. That includes structuring data in <strong>Snowflake</strong> and semantic models, building analytics layers in <strong>Power BI</strong> and <strong>DAX</strong>, and working on AI use cases with tools like <strong>Claude</strong>.</p>
+                <p class="body-text">A lot of the work starts messy. Incomplete data, unclear requirements, too many moving parts. That's usually where I do my best work. I like taking unstructured problems, learning whatever I need to learn, and pushing until there's something useful on the other side.</p>
             </div>
             <div class="toolkit">
-                <div class="tk-row"><span class="tk-name">Power BI</span><span class="tk-level">Primary</span></div>
-                <div class="tk-row"><span class="tk-name">DAX</span><span class="tk-level">Advanced</span></div>
-                <div class="tk-row"><span class="tk-name">Snowflake</span><span class="tk-level">Production</span></div>
-                <div class="tk-row"><span class="tk-name">Azure AI / OCR</span><span class="tk-level">Capability Lead</span></div>
-                <div class="tk-row"><span class="tk-name">Python</span><span class="tk-level">Tooling</span></div>
-                <div class="tk-row"><span class="tk-name">Tabular Editor</span><span class="tk-level">Modeling</span></div>
-                <div class="tk-row"><span class="tk-name">DAX Studio</span><span class="tk-level">Performance</span></div>
+                <div class="tk-row"><span class="tk-name">SQL</span></div>
+                <div class="tk-row"><span class="tk-name">Snowflake</span></div>
+                <div class="tk-row"><span class="tk-name">Power BI</span></div>
+                <div class="tk-row"><span class="tk-name">Data Visualization</span></div>
+                <div class="tk-row"><span class="tk-name">Data Engineering</span></div>
+                <div class="tk-row"><span class="tk-name">Python</span></div>
+                <div class="tk-row"><span class="tk-name">Fabric</span></div>
+                <div class="tk-row"><span class="tk-name">Azure</span></div>
+                <div class="tk-row"><span class="tk-name">AWS</span></div>
+                <div class="tk-row"><span class="tk-name">AI Engineering</span></div>
+                <div class="tk-row"><span class="tk-name">LLM Workflows</span></div>
+                <div class="tk-row"><span class="tk-name">HTML</span></div>
             </div>
         </div>
     </div>
@@ -486,13 +507,13 @@ a { color: inherit; text-decoration: none; }
 <!-- ═══ FINAL WEAPON ═══ -->
 <section class="scene" id="fw" style="overflow:hidden; position:relative;">
     <div class="content-wrap">
-        <p class="scene-eyebrow">From Passion to Action</p>
-        <h2 class="scene-heading split-heading">Final Weapon — My Vision for Modern Games Media.</h2>
+        <p class="scene-eyebrow">Games Media</p>
+        <h2 class="scene-heading split-heading">Building Final Weapon</h2>
         <div class="fw-layout">
             <div>
-                <p class="body-text">I founded <strong>Final Weapon</strong> at 16 years old because Japanese gaming coverage in English was scattered, shallow, and riddled with clickbait. I wanted to build a home for nonsense-free news, reviews, and insights about the video game medium and niche entertainment.</p>
-                <p class="body-text">Since launch in 2019, we've grown into a <strong>Metacritic-listed publication</strong> with a massive worldwide audience. As Editor-in-Chief, I lead a talented team of writers, content creators, and designers — overseeing all content production, editorial strategy, and day-to-day operations.</p>
-                <p class="body-text">Through Final Weapon, I've built countless connections across the industry and gained deep experience in <strong>project management, marketing, and industry relations</strong>. I work closely with major publishers and developers, and represent Final Weapon at leading events worldwide — including <strong>Summer Game Fest</strong>, <strong>The Game Awards</strong>, and more.</p>
+                <p class="body-text">I started <strong><a href="https://finalweapon.net" target="_blank" rel="noopener">Final Weapon</a></strong> when I was 16. I was reading a lot of English coverage around Japanese games and kept running into the same problem: too much clickbait, not enough depth, and not much that felt made for people who actually followed the space.</p>
+                <p class="body-text">So I built the kind of outlet I wanted to read. Final Weapon launched in 2019 and grew into a <strong><a href="https://www.metacritic.com/publication/final-weapon/" target="_blank" rel="noopener">Metacritic-listed publication</a></strong> with more than 10 million lifetime views. I still lead both the editorial and video sides day to day, from planning coverage and publishing stories to managing contributors and shaping where the brand goes next.</p>
+                <p class="body-text">It has also opened a lot of doors. I've worked with major publishers and developers, built long-term relationships across the industry, and covered events like <strong>Summer Game Fest</strong> and <strong>The Game Awards</strong>. More than anything, Final Weapon taught me how to build something over time and keep making it better as it grows.</p>
                 <a href="https://finalweapon.net" target="_blank" rel="noopener" class="fw-cta">Read Final Weapon →</a>
             </div>
             <div>
@@ -525,7 +546,7 @@ a { color: inherit; text-decoration: none; }
 
         <div class="pub-section">
             <p class="scene-eyebrow">Also Published At</p>
-            <p class="body-text">Outside of Final Weapon, I'm a <strong>regular contributor at IGN</strong>, where I've worked with the Tech, Commerce, IGN Store, IGN Rewards, and Evergreen teams. I run the Daily Deals column and have assisted the Database Management team on IGN Playlist.</p>
+            <p class="body-text">Outside of Final Weapon, I also contribute to <strong>IGN</strong>. I've worked with the Tech, Commerce, IGN Store, IGN Rewards, and Evergreen teams, run the Daily Deals column, and helped the Database Management team on IGN Playlist.</p>
             <div class="pub-pills">
                 <span class="pub-pill hl">IGN — Regular Contributor</span>
                 <span class="pub-pill">Hard Drive</span>
@@ -541,7 +562,7 @@ a { color: inherit; text-decoration: none; }
 <section class="scene" id="life">
     <div class="content-wrap">
         <p class="scene-eyebrow">Off the Clock</p>
-        <h2 class="scene-heading split-heading">There's more to life than dashboards.</h2>
+        <h2 class="scene-heading split-heading">There's more to life than dashboards</h2>
     </div>
     <div class="gallery-outer" id="gallery">
         <div class="gallery-track" id="galleryTrack">
@@ -661,6 +682,9 @@ a { color: inherit; text-decoration: none; }
         </div>
     </div>
     <p class="gallery-hint">Hover to pause</p>
+    <div class="content-wrap life-note">
+        <p class="body-text">A lot of my life outside work still circles back to the things I care about most: games, travel, college football, and time with the people closest to me. What I value most is getting to stay close to the things that keep me curious, whether that's seeing a new place, meeting new people, or just making memories with people I care about. That's usually where the next idea comes from.</p>
+    </div>
 </section>
 
 <!-- ═══ CONTACT ═══ -->
